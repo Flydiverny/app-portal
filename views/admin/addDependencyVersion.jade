@@ -1,0 +1,19 @@
+//
+   Created by marku on 2016-04-19.
+extends ../layout
+
+block content
+    h2 Add Dependency Version
+    form(method='POST', action='/admin/dependencyVersion')
+        .form-group
+            label(for='type') Dependency Type
+            select#type.form-control(name='type')
+                each dependency in types
+                    option(value=dependency._id)= dependency.name
+        .form-group
+            label(for='version') Version
+            input#version.form-control(type='text', placeholder='4.0', name='version')
+        .form-group
+          label(for='color') Color
+          input#color.form-control(type='text', placeholder='#cdcdcd', name='color')
+        button.btn.btn-primary(type='submit') Create

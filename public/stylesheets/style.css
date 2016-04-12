@@ -1,0 +1,11 @@
+.thumbnail {
+  text-align: center;
+}
+
+.application img {
+  max-height: 175px;
+}
+
+.selected a {
+  border: 1px solid rgb(51, 122, 183);
+}

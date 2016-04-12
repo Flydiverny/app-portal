@@ -1,0 +1,62 @@
+extends layout
+
+block script
+  script(type='text/javascript').
+    var isMobile = {
+      Windows: function() {
+        return /IEMobile/i.test(navigator.userAgent);
+      },
+      Android: function() {
+        return /Android/i.test(navigator.userAgent);
+      },
+      BlackBerry: function() {
+        return /BlackBerry/i.test(navigator.userAgent);
+      },
+      iOS: function() {
+        return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      },
+      any: function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Windows());
+      }
+    };
+    $(document).ready(function() {
+      if (isMobile.iOS()) {
+        $(".android").addClass("hidden");
+      } else if (isMobile.Android()) {
+        $(".ios").addClass("hidden");
+      }
+      
+      if (isMobile.Windows()
+          || isMobile.BlackBerry()) {
+        $(".applications").addClass("hidden");
+        $(".applications").parent().html("<strong>Sorry! We don't have any applications for your device!");
+      }
+    });
+
+block content
+  if nightly
+    .row
+      .col-xs-6
+        h1(style="margin-top:0") Browsing Nightly
+      .col-xs-6.text-right
+        h1(style="margin-top:0")
+          a(href="/") Go to Release
+  .row.applications
+    if applications.length > 0
+      each app in applications
+        .col-xs-6.col-md-3.application.text-center(id=app.id, class=app.type)
+          if app.type === 'ios'
+            a.thumbnail(href=app.link)
+              img(src='/icon/' + app.id, alt=app.title + ' Logo')
+              =app.title
+          else
+            if nightly
+              a.thumbnail(href='/nightly/' + app.id)
+                img(src='/icon/' + app.id, alt=app.title + ' Logo')
+                =app.title
+            else
+              a.thumbnail(href='/app/' + app.id)
+                img(src='/icon/' + app.id, alt=app.title + ' Logo')
+                =app.title
+    else
+      .col-md-12 Ther are no apps!

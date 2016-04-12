@@ -1,0 +1,25 @@
+{
+  "name": "app-portal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "bluebird": "^3.3.5",
+    "body-parser": "~1.15.0",
+    "connect-mongo": "^1.1.0",
+    "cookie-parser": "~1.4.1",
+    "debug": "~2.2.0",
+    "express": "~4.13.1",
+    "express-session": "^1.13.0",
+    "flash": "^1.1.0",
+    "jade": "~1.11.0",
+    "mkdirp": "^0.5.1",
+    "mongodb": "^2.1.16",
+    "mongoose": "^4.4.12",
+    "morgan": "~1.7.0",
+    "multer": "^1.1.0",
+    "serve-favicon": "~2.3.0"
+  }
+}

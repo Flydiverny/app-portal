@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+  | Hello ! If you want to logout click 
+  a(href='/admin/logout') here
+  | .
+  ul
+    li
+      a(href='/admin/newApplication') Add application
+    li
+      a(href='/admin/newVersion') Upload new apk
+    li
+      a(href='/admin/dependency') Add Dependency Type
+    li
+      a(href='/admin/dependencyVersion') Add Dependency Version

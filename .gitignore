@@ -1,0 +1,7 @@
+node_modules
+uploads
+data
+.tmp
+.idea
+*.iml
+config.json

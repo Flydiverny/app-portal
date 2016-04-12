@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  if status
+    h1= status
+      if message
+        = " - " + message
+    if error
+      pre #{error.stack}
+  else
+    h1 Something went terribly wrong here..

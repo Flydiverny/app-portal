@@ -1,0 +1,12 @@
+extends ../layout
+
+block content
+  h2 Add Dependency
+  form(method='POST', action='/admin/dependency')
+    .form-group
+      label(for='title') Dependency Name
+      input#title.form-control(type='text', placeholder='AppPortal', name='name')
+    //.form-group
+    //  label(for='color') Color
+    //  input#color.form-control(type='text', placeholder='#cdcdcd', name='color')
+    button.btn.btn-primary(type='submit') Create

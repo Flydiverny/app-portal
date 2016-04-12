@@ -1,0 +1,9 @@
+extends ../layout
+
+block content
+  form(action='/admin/newVersion', enctype='multipart/form-data', method='post')
+    h2 Upload new APK
+    .form-group
+      label(for='apk') Apk
+      input#apk(type='file', name='apk', multiple='multiple')
+    button.btn.btn-primary(type='submit') Upload
