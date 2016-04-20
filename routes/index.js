@@ -3,30 +3,40 @@ var mongoose = require('mongoose');
 var router = express.Router();
 const Application = mongoose.model('Application');
 const Dependency = mongoose.model('Dependency');
+const DependencyVersion = mongoose.model('DependencyVersion');
 
 var renderIndex = function(req, res, next) {
   console.log("Render index!");
   Application.find({ hidden: false }).sort({ type: 1, title : -1 }).then(function(apps) {
     return res.render('index', {applications: apps});
   }, next);
-}
+};
+
+var resultOrError = function(res) {
+    return function(result) {
+        if (!result) return res.sendStatus(404);
+        return result;
+    }
+};
+
+var findApplication = function(id, match, res) {
+    return Application.findOne({ id: id })
+        .populate({
+            path: 'versions',
+            populate: { path : 'compatible', populate: { path: 'type', select: 'name' } },
+            select: 'name changelog filename compatible sortingCode',
+            match: match,
+            options: {
+                sort: { sortingCode: -1 }
+            }
+        }).then(resultOrError(res));
+};
 
 var renderApp = function(req, res, next, showNightly, showAll) {
   res.locals.nightly = showNightly;
 
-  Application.findOne({ id: req.params.id })
-  .populate({
-    path: 'versions',
-    populate: { path : 'compatible', populate: { path: 'type', select: 'name' } },
-    select: 'name changelog filename compatible sortingCode',
-    match: { hidden: { $ne: true }, nightly: showNightly },
-    options: {
-      sort: { sortingCode: -1 }
-    }
-  })
+    findApplication(req.params.id, { hidden: { $ne: true }, nightly: showNightly }, res)
   .then(function(app) {
-    if (!app) return res.sendStatus(404);
-
     if (!showAll) {
       var versionsCode = [];
       var versionsToShow = [];
@@ -84,42 +94,33 @@ router.get("/nightly/:id", function(req, res, next) {
   renderApp(req, res, next, true, true);
 });
 
-router.get("/app/:id/:tes", function(req, res, next) {
-  Dependency.findOne({name: req.params.tes })
-  .then(function(dep) {
-    if(!dep) res.sendStatus(404);
+router.get("/app/:id/:deptype/:depver", function(req, res, next) {
+  Dependency.findOne({name: req.params.deptype })
+      .then(resultOrError(res))
+      .then(function(dep) {
+          return DependencyVersion.findOne({ version: req.params.depver });
+      })
+      .then(resultOrError(res))
+      .then(function(depVer) {
+        return findApplication(req.params.id, { hidden: { $ne: true }, compatible : { $in : [depVer._id]} }, res);
+      })
+      .then(function(app) {
+        app.dependencies = [];
+        app.versions.forEach(function(version) {
+          version.compatible.forEach(function(dep) {
+            if (app.dependencies.indexOf(dep) === -1)
+              app.dependencies.push(dep);
+          });
+        });
 
-    return dep;
-  })
-  .then(function(dep) {
-    return Application.findOne({ id: req.params.id })
-    .populate({
-      path: 'versions',
-      match: { hidden: { $ne: true }, compatible : { $in : [dep._id]} },
-      options: {
-        sort: { sortingCode: -1 }
-      },
-      populate: { path : 'compatible', }
-    });
-  })
-  .then(function(app) {
-    if (!app) res.sendStatus(404);
+        //app.versions.filter(function(version) {
+        //  return
+        //});
 
-    app.dependencies = [];
-    app.versions.forEach(function(version) {
-      version.compatible.forEach(function(dep) {
-        if (app.dependencies.indexOf(dep) === -1)
-          app.dependencies.push(dep);
+        return res.render("application", app);
       });
-    });
-
-    app.versions.filter(function(version) {
-      return
-    });
-
-    return res.render("application", app);
-  });
 });
 
 module.exports = router;
+
 
