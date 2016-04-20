@@ -8,6 +8,35 @@ block script
         $("#dialogTitle").html($(this).data("version"));
       })
     });
+    $(function() {
+      $('.copy').on('click', function() {
+        console.log($(this));
+        copyTextToClipboard(location.protocol + "//" + location.host  + $(this).data("link"));
+      });
+    });
+
+    // modification of http://stackoverflow.com/a/30810322/598962
+    function copyTextToClipboard(text) {
+      var textArea = document.createElement("textarea");
+      
+      textArea.style.position = 'fixed';
+      textArea.style.top = 0;
+      textArea.style.left = 0;
+      textArea.style.width = '2em';
+      textArea.style.height = '2em';
+      textArea.style.background = 'transparent';
+      textArea.value = text;
+
+      document.body.appendChild(textArea);
+      textArea.select();
+
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+      }
+
+      document.body.removeChild(textArea);
+    }
 
 block content
   #myModal.modal.fade(tabindex='-1', role='dialog')
@@ -61,7 +90,7 @@ block content
             each dep in version.compatible
               span.label(style="background-color:" + dep.color + ";margin-right:5px;", id=dep.version)= dep.type.name + " " + dep.version
           td.text-right
+            a.btn.btn-default.btn-sm.copy.hidden-xs(href="#", data-link='/download/' + version.filename, style="margin-right: 5px;")
+              span.glyphicon.glyphicon-copy
             a.btn.btn-default.btn-sm(href='/download/' + version.filename)
               span.glyphicon.glyphicon-download-alt
-              //span.glyphicon.glyphicon-download-alt
-              
