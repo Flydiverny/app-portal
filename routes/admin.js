@@ -12,6 +12,75 @@ const auth = require('../middleware/auth');
 const storage = require('../util/upload');
 const DependencyVersion = mongoose.model('DependencyVersion');
 
+var sortingCode = function(apk) {
+  console.log("Generating sorting code!");
+  var ext = apk.indexOf(".apk");
+  var filename = apk.substring(0, ext);
+  if (filename.indexOf('NIGHTLY') > -1) {
+    var tokens = filename.split("_");
+    // tokens[2] = "2016-01-01"
+    return parseInt(tokens[2].split('-').join(''));
+  } else if (filename.indexOf('rev') > -1) {
+    var tokens = filename.split("_");
+    // tokens[2] = "rev2801"
+    return parseInt(tokens[2].replace("rev", ""));
+  } else {
+    var snap = filename.indexOf('-');
+
+    if (snap > -1)
+      filename = filename.substring(0, snap);
+
+    var tokens = filename.split("_");
+    var version = tokens[1].split('.');
+
+    return (parseInt(version[0]) * 10000) + (parseInt(version[1])*100) + parseInt(version[2]);
+  }
+};
+
+var saveFile = function(file) {
+  console.log("Creating promise!");
+  return new Promise(function(resolve, reject) {
+    console.log("Running promise!");
+    var filename = file.originalname;
+    var ext = filename.indexOf(".apk");
+
+    if (ext === -1)
+      return;
+
+    filename = filename.substring(0, ext);
+    var tokens = filename.split("_"); // [0] = "AppPortal", [1] = "2.0.0"
+    console.log(tokens);
+    if (tokens.length < 2)
+      return reject("Filename doesn't match expected format");
+
+    Application.findOne({ id: tokens[0] })
+        .then(function(app) {
+          if (!app) return reject("Unknown application");
+
+          var version = new Version({
+            name: tokens[1] + (tokens.length > 2 ? " " + tokens[2] : ""),
+            app: app._id,
+            filename: file.originalname,
+            apk: file.path,
+            sortingCode: sortingCode(file.originalname),
+            nightly: file.originalname.indexOf('rev') > -1 || file.originalname.indexOf('NIGHTLY') > -1 || file.originalname.indexOf('SNAPSHOT') > -1
+          }).save(function(err, versionResult) {
+            if(err) return reject(err);
+
+            app.versions.push(versionResult._id);
+            app.save(function(err, result) {
+              if(err) return reject(err);
+              return resolve(versionResult);
+            });
+          });
+        });
+  });
+};
+
+var mapFiles = function(files){
+  return Promise.map(files, saveFile);
+};
+
 var uploadApk = multer({
   storage: storage,
   fileFilter: function fileFilter (req, file, cb) {
@@ -51,75 +120,6 @@ router.post('/newVersion', auth, uploadApk.array('apk'), function(req, res, next
     req.flash("warning", "No file specified!");
     return res.redirect("/admin/newVersion");
   }
-
-  var sortingCode = function(apk) {
-    console.log("Generating sorting code!");
-    var ext = apk.indexOf(".apk");
-    var filename = apk.substring(0, ext);
-    if (filename.indexOf('NIGHTLY') > -1) {
-      var tokens = filename.split("_");
-      // tokens[2] = "2016-01-01"
-      return parseInt(tokens[2].split('-').join(''));
-    } else if (filename.indexOf('rev') > -1) {
-      var tokens = filename.split("_");
-      // tokens[2] = "rev2801"
-      return parseInt(tokens[2].replace("rev", ""));
-    } else {
-      var snap = filename.indexOf('-');
-
-      if (snap > -1)
-        filename = filename.substring(0, snap);
-
-      var tokens = filename.split("_");
-      var version = tokens[1].split('.');
-
-      return (parseInt(version[0]) * 10000) + (parseInt(version[1])*100) + parseInt(version[2]);
-    }
-  };
-
-  var saveFile = function(file) {
-    console.log("Creating promise!");
-    return new Promise(function(resolve, reject) {
-      console.log("Running promise!");
-      var filename = file.originalname;
-      var ext = filename.indexOf(".apk");
-
-      if (ext === -1)
-        return;
-
-      filename = filename.substring(0, ext);
-      var tokens = filename.split("_"); // [0] = "AppPortal", [1] = "2.0.0"
-      console.log(tokens);
-      if (tokens.length < 2)
-        return reject("Filename doesn't match expected format");
-
-      Application.findOne({ id: tokens[0] })
-        .then(function(app) {
-          if (!app) return reject("Unknown application");
-
-          var version = new Version({
-            name: tokens[1] + (tokens.length > 2 ? " " + tokens[2] : ""),
-            app: app._id,
-            filename: file.originalname,
-            apk: file.path,
-            sortingCode: sortingCode(file.originalname),
-            nightly: file.originalname.indexOf('rev') > -1 || file.originalname.indexOf('NIGHTLY') > -1 || file.originalname.indexOf('SNAPSHOT') > -1
-          }).save(function(err, versionResult) {
-            if(err) return reject(err);
-
-            app.versions.push(versionResult._id);
-            app.save(function(err, result) {
-              if(err) return reject(err);
-              return resolve(versionResult);
-            });
-          });
-        });
-    });
-  };
-
-  var mapFiles = function(files){
-    return Promise.map(files, saveFile);
-  };
 
   mapFiles(req.files).then(function(results) {
     console.log("SUCCESS??");

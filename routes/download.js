@@ -4,6 +4,22 @@ var router = express.Router();
 const Application = mongoose.model('Application');
 const Version = mongoose.model('Version');
 const Dependency = mongoose.model('Dependency');
+const DependencyVersion = mongoose.model('DependencyVersion');
+
+var findDependency = function(res, type, ver) {
+    return Dependency.findOne({name: type })
+        .then(resultOrError(res))
+        .then(function(dep) {
+            return DependencyVersion.findOne({ type: dep._id, version: ver });
+        })
+        .then(resultOrError(res));
+};
+
+var findAndReturnFile = function(res, query) {
+    return Version.findOne(query, 'apk filename')
+        .sort({ sortingCode : -1})
+        .then(returnFile(res));
+};
 
 var returnFile = function(res) {
 	return function(version) {
@@ -21,7 +37,7 @@ var returnFile = function(res) {
 	}
 };
 
-var returnOrError = function(res) {
+var resultOrError = function(res) {
 	return function(value) {
 			if (!value) return res.sendStatus(404);
 			return value;
@@ -29,57 +45,45 @@ var returnOrError = function(res) {
 };
 
 router.get('/:filename', function(req, res, next) {
-	Version.findOne({ filename: req.params.filename }).then(returnFile(res));
+    findAndReturnFile(res, { filename: req.params.filename });
 });
 
-//router.get('/:deptype/:depver/:filename', function(req, res, next) {
-//	Dependency.findOne({ name: req.params.tes })
-//		.then(returnOrError(res))
-//		.then(function(tes) {
-//			return Version.findOne({ filename: req.params.filename, compatible: tes._id })
-//		})
-//		.then(returnFile(res));
-//});
-//
-//router.get('/:app/latest', function(req, res, next) {
-//	Application.findOne({ id: req.params.app }, '_id')
-//	.then(returnOrError(res))
-//	.then(function(app) {
-//		return Version.findOne({ app: app._id, hidden: false, nightly: false }, 'apk filename').sort({ sortingCode : -1});
-//	})
-//	.then(returnFile(res));
-//});
-//
-//router.get('/:deptype/:depver/:app/latest', function(req, res, next) {
-//	Application.findOne({ id: req.params.app }, '_id')
-//	.then(returnOrError(res))
-//	.then(function(app) {
-//		return Dependency.findOne({ name: req.params.tes }, '_id')
-//			.then(returnOrError(res))
-//			.then(function(tes) {
-//				return [app, tes];
-//			});
-//	})
-//	.then(function(args) {
-//		return Version.findOne({ app: args[0]._id, compatible : args[1]._id, hidden: false, nightly: false }, 'apk filename').sort({ sortingCode : -1});
-//	})
-//	.then(returnFile(res));
-//});
-//
-//router.get('/:deptype/:depver/:app/:filename', function(req, res, next) {
-//	Application.findOne({ id: req.params.app }, '_id')
-//	.then(returnOrError(res))
-//	.then(function(app) {
-//		return Dependency.findOne({ name: req.params.tes }, '_id')
-//			.then(returnOrError(res))
-//			.then(function(tes) {
-//				return [app, tes];
-//			});
-//	})
-//	.then(function(args) {
-//		return Version.findOne({ filename: req.params.filename, app: args[0]._id, compatible : args[1]._id }, 'apk filename');
-//	})
-//	.then(returnFile(res));
-//});
+router.get('/:deptype/:depver/:filename', function(req, res, next) {
+    findDependency(res, req.params.deptype, req.params.depver)
+        .then(function(depVer) {
+			return findAndReturnFile(res, { filename: req.params.filename, compatible: depVer._id })
+		});
+});
+
+router.get('/:app/latest', function(req, res, next) {
+	Application.findOne({ id: req.params.app }, '_id')
+	.then(resultOrError(res))
+	.then(function(app) {
+		return findAndReturnFile(res, { app: app._id, hidden: false, nightly: false });
+	});
+});
+
+
+router.get('/:deptype/:depver/:app/latest', function(req, res, next) {
+	Application.findOne({ id: req.params.app }, '_id')
+	.then(resultOrError(res))
+	.then(function(app) {
+		return findDependency(res, req.params.deptype, req.params.depver)
+            .then(function(depVer) {
+                return findAndReturnFile(res, { app: app._id, compatible : depVer._id, hidden: false, nightly: false });
+			});
+	});
+});
+
+router.get('/:deptype/:depver/:app/:filename', function(req, res, next) {
+    Application.findOne({ id: req.params.app }, '_id')
+        .then(resultOrError(res))
+        .then(function(app) {
+            return findDependency(res, req.params.deptype, req.params.depver)
+                .then(function(depVer) {
+                    return findAndReturnFile(res, { filename: req.params.filename, app: app._id, compatible : depVer._id, hidden: false, nightly: false });
+                });
+        });
+});
 
 module.exports = router;
