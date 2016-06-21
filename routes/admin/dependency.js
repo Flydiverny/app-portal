@@ -36,7 +36,7 @@ router.get('/dependencyVersion', auth, function(req, res, next) {
 
 router.post('/dependencyVersion', auth, function(req, res, next) {
     console.log(req.body);
-    Dependency.findOne({_id: req.body.version})
+    Dependency.findOne({_id: req.body.type})
         .then(function (dep) {
             new DependencyVersion({
                 version: req.body.version,
