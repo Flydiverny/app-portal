@@ -40,19 +40,20 @@ router.post('/dependencyVersion', auth, function(req, res, next) {
         .then(function (dep) {
             new DependencyVersion({
                 version: req.body.version,
-                type: req.body.type,
+                type: dep._id,
                 color: req.body.color || randomColor()
             }).save(function (err, version) {
                 if (err) {
                     req.flash("danger", JSON.stringify(err));
+                    return res.redirect('/admin/dependencyVersion');
                 } else {
                     req.flash("success", "Dependency Version added!");
-                }
 
-                dep.versions.push(version._id);
-                dep.save(function (err, saved) {
-                    return res.redirect('/admin/dependencyVersion');
-                });
+                    dep.versions.push(version._id);
+                    dep.save(function (err, saved) {
+                        return res.redirect('/admin/dependencyVersion');
+                    });
+                }
             });
         }, next);
 });
