@@ -10,7 +10,6 @@ block script
     });
     $(function() {
       $('.copy').on('click', function() {
-        console.log($(this));
         copyTextToClipboard(location.protocol + "//" + location.host  + $(this).data("link"));
       });
     });
