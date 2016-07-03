@@ -10,7 +10,6 @@ var randomColor = function() {
 
 router.get('/dependency', auth, function(req, res, next) {
   Dependency.find().then(function(deps) {
-    console.log(deps);
     return res.render('admin/dependency/index', { types: deps });
   });
 });
@@ -64,7 +63,6 @@ router.get('/dependencyVersion', auth, function(req, res, next) {
 });
 
 router.post('/dependencyVersion', auth, function(req, res, next) {
-    console.log(req.body);
     Dependency.findOne({_id: req.body.type})
         .then(function (dep) {
             new DependencyVersion({

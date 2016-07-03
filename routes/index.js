@@ -6,7 +6,6 @@ const Dependency = mongoose.model('Dependency');
 const DependencyVersion = mongoose.model('DependencyVersion');
 
 var renderIndex = function (req, res, next) {
-  console.log("Render index!");
   Application.find({hidden: false}).sort({type: 1, title: -1}).then(function (apps) {
     return res.render('index', {applications: apps});
   }, next);
@@ -26,7 +25,7 @@ var findApplication = function (id, match, res) {
       populate: {
         path: 'compatible',
         options: {
-          sort: { version: -1}
+          sort: {version: -1}
         },
         populate: {
           path: 'type',
@@ -47,7 +46,6 @@ var buildDependencyList = function (app) {
   app.dependencies = [];
   app.versions.forEach(function (version) {
     version.compatible.forEach(function (dep) {
-      console.log(dep);
       if (dep.type.filterable) {
         if (app.dependencies.indexOf(dep) === -1)
           app.dependencies.push(dep);
@@ -119,7 +117,6 @@ router.get("/app/:id/:deptype/:depver", function (req, res, next) {
     })
     .then(resultOrError(res))
     .then(function (depVer) {
-      console.log("Search fo rapp!");
       return findApplication(req.params.id, {hidden: {$ne: true}, nightly: false}, res).then(function (app) {
         return {app: app, versionId: depVer._id.toString()}
       });
@@ -131,8 +128,8 @@ router.get("/app/:id/:deptype/:depver", function (req, res, next) {
       var versionsToShow = [];
 
       // Filter show only latest of each minor version.
-      app.versions.forEach(function (ver,k) {
-        ver.compatible.forEach(function(depversion) {
+      app.versions.forEach(function (ver, k) {
+        ver.compatible.forEach(function (depversion) {
           if (depversion._id.toString() === versionId) {
             versionsToShow.push(ver);
             return true;
