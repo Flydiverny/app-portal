@@ -8,15 +8,12 @@ const fs = require('fs');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const config = require('./util/config');
 
 const models = path.join(__dirname, 'models');
 const app = express();
 
-var config = JSON.parse(
-    fs.readFileSync('config.json')
-);
-
-app.locals.title = config.title || "App Portal";
+app.locals.pagetitle = config.title || "App Portal";
 
 const db = config.mongo.database || "app-portal";
 const host = config.mongo.host || "localhost";
@@ -40,11 +37,11 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   store: new MongoStore({
-      url: DATABASE,
-      autoRemove: 'interval',
-      autoRemoveInterval: 10 // In minutes. Default
-    }),
-    cookie: { maxAge: 15*60*1000}
+    url: DATABASE,
+    autoRemove: 'interval',
+    autoRemoveInterval: 10 // In minutes. Default
+  }),
+  cookie: { maxAge: 15*60*1000}
 }));
 
 // Allow use of flash messages
