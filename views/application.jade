@@ -56,32 +56,34 @@ block content
         if nightly
           span  (Nightly)
       unless nightly
-        a.btn.btn-primary(href='/download/' + id + '/latest') Download Latest
+        a.btn.btn-primary(href='/download/' + id + '/latest') Download Latest&nbsp;
           span.glyphicon.glyphicon-download-alt
     .col-xs-4
       img.pull-right(src='/icon/' + id, alt=title + ' Logo', style='max-width: 100px; max-height: 100px;')
-  .row(style="margin-top: 15px;")
-    .col-xs-12
-      .btn-group(role="group")
-        a.btn.btn-info.btn-sm(href="/app/" + id + "/") Show All
-        each dep in dependencies
-          a.btn.btn-default.btn-sm(type="button", href="/app/" + id + "/" + dep.type.name + "/" + dep.version)= dep.type.name + " " + dep.version
+  unless nightly
+    .row(style="margin-top: 15px;")
+      .col-xs-12
+        .btn-group(role="group")
+          a.btn.btn-info.btn-sm(href="/app/" + id + "/") Show Latest
+          each dep in dependencies
+            a.btn.btn-default.btn-sm(type="button", href="/app/" + id + "/" + dep.type.name + "/" + dep.version)= dep.type.name + " " + dep.version
 
   table.table
     thead
       tr
-        if session.admin
-          th Edit
         th Version
         th Compatibility
         th.text-right Download
     tbody
       each version in versions
         tr
-          if session.admin
-            td
-              a(href='/admin/editVersion/' + version._id) Edit
-          td= version.name
+
+          td
+            if session.admin
+              a.btn.btn-default.btn-sm(href='/admin/editVersion/' + version._id)
+                span.glyphicon.glyphicon-edit
+              |&nbsp;
+            = version.name
             if version.changelog
               a.btn.btn-default.btn-sm(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.changelog, style="margin-left: 5px")
                 span.glyphicon.glyphicon-list

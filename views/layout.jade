@@ -17,7 +17,7 @@ html(lang='en')
             if session.admin
               li(role='presentation')
                 a(href='/admin') Admin
-        h3.text-muted= title
+        h3.text-muted= pagetitle
       .well
         if flash
           while message = flash.shift()
@@ -26,11 +26,11 @@ html(lang='en')
         block content
       footer.footer
         p
-          | © 2016 Markus Maga
+          | Powered by AppPortal
           span.pull-right
             if nightly
               a(href='/nightly') Nightly
-              |  |
+              |  |&nbsp;
             if session.admin
               a(href='/admin/logout') Logout
             else
