@@ -28,8 +28,9 @@ block script
       
       if (isMobile.Windows()
           || isMobile.BlackBerry()) {
-        $(".applications").addClass("hidden");
-        $(".applications").parent().html("<strong>Sorry! We don't have any applications for your device!");
+        var $apps = $(".applications");
+        $apps.addClass("hidden");
+        $apps.parent().html("<strong>Sorry! We don't have any applications for your device!</strong>");
       }
     });
 
