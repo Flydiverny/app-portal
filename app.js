@@ -14,6 +14,7 @@ const models = path.join(__dirname, 'models');
 const app = express();
 
 app.locals.pagetitle = config.title || "App Portal";
+app.locals.showlatest = config.showlatest || true;
 
 const db = config.mongo.database || "app-portal";
 const host = config.mongo.host || "localhost";

@@ -55,9 +55,10 @@ block content
       h1= title
         if nightly
           span  (Nightly)
-      unless nightly
-        a.btn.btn-primary(href='/download/' + id + '/latest') Download Latest&nbsp;
-          span.glyphicon.glyphicon-download-alt
+      unless showlatest
+        unless nightly
+          a.btn.btn-primary(href='/download/' + id + '/latest') Download Latest&nbsp;
+            span.glyphicon.glyphicon-download-alt
     .col-xs-4
       img.pull-right(src='/icon/' + id, alt=title + ' Logo', style='max-width: 100px; max-height: 100px;')
   unless nightly

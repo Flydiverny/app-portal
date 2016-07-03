@@ -30,7 +30,7 @@ var findApplication = function (id, match, res) {
         },
         populate: {
           path: 'type',
-          select: 'name'
+          select: 'name filterable'
         }
       },
       select: 'name changelog filename compatible sortingCode',
@@ -47,8 +47,11 @@ var buildDependencyList = function (app) {
   app.dependencies = [];
   app.versions.forEach(function (version) {
     version.compatible.forEach(function (dep) {
-      if (app.dependencies.indexOf(dep) === -1)
-        app.dependencies.push(dep);
+      console.log(dep);
+      if (dep.type.filterable) {
+        if (app.dependencies.indexOf(dep) === -1)
+          app.dependencies.push(dep);
+      }
     });
   });
 

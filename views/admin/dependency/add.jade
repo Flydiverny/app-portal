@@ -1,11 +1,11 @@
-extends ../layout
+extends ../../layout
 
 block content
   h2 Add Dependency
-  form(method='POST', action='/admin/dependency')
+  form(method='POST', action='/admin/dependency/add')
     .form-group
       label(for='title') Dependency Name
-      input#title.form-control(type='text', placeholder='AppPortal', name='name')
+      input#title.form-control(type='text', placeholder='AppPortal', name='name', value=name)
     //.form-group
     //  label(for='color') Color
     //  input#color.form-control(type='text', placeholder='#cdcdcd', name='color')

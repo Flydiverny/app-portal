@@ -9,28 +9,57 @@ var randomColor = function() {
 };
 
 router.get('/dependency', auth, function(req, res, next) {
-    return res.render('admin/addDependency');
+  Dependency.find().then(function(deps) {
+    console.log(deps);
+    return res.render('admin/dependency/index', { types: deps });
+  });
 });
 
-router.post('/dependency', auth, function(req, res, next) {
+router.get('/dependency/add', auth, function(req, res, next) {
+    return res.render('admin/dependency/add');
+});
+
+router.get('/dependency/edit/:id', auth, function(req, res, next) {
+  Dependency.findOne({ _id: req.params.id }).then(function(dep) {
+    return res.render('admin/dependency/edit', dep);
+  });
+});
+
+router.post('/dependency/edit/:id', auth, function(req, res, next) {
+  Dependency.findOne({ _id: req.params.id }).then(function(dep) {
+    dep.name = req.body.name;
+    dep.filterable = req.body.filterable ? true : false;
+
+    dep.save(function(err, result) {
+      if (err) {
+        req.flash("danger", JSON.stringify(err));
+        return res.redirect('/admin/dependency/edit/' + dep._id);
+      } else {
+        req.flash("success", "Dependency type " + dep.name + " updated!");
+        return res.redirect('/admin/dependency');
+      }
+    });
+  });
+});
+
+router.post('/dependency/add', auth, function(req, res, next) {
     var dep = new Dependency({
         name: req.body.name
     }).save(function(err, result) {
         if (err) {
             req.flash("danger", JSON.stringify(err));
+            return res.redirect('/admin/dependency/add');
         } else {
             req.flash("success", "Dependency Type added!");
+            return res.redirect('/admin/dependency');
         }
-
-        return res.redirect('/admin/dependency');
     });
 });
-
 
 router.get('/dependencyVersion', auth, function(req, res, next) {
     Dependency.find()
         .then(function(result) {
-            return res.render('admin/addDependencyVersion', { types : result });
+            return res.render('admin/dependency/addVersion', { types : result });
         }, next);
 });
 
