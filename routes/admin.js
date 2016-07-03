@@ -11,6 +11,10 @@ const Dependency = mongoose.model('Dependency');
 const auth = require('../middleware/auth');
 const storage = require('../util/upload');
 const DependencyVersion = mongoose.model('DependencyVersion');
+const config = require('../util/config');
+
+const username = config.username || "admin";
+const password = config.password || "Private!";
 
 var sortingCode = function(apk) {
   console.log("Generating sorting code!");
@@ -92,8 +96,10 @@ var uploadApk = multer({
   }
 });
 
+router.get('/login', function(req, res, next) { res.redirect('/admin') });
+
 router.post('/login', function(req, res, next) {
-  if (req.body.username !== "admin" || req.body.password !== "Private!") {
+  if (req.body.username !== username || req.body.password !== password) {
     req.session.regenerate(function(err) {
       req.flash("danger", "Invalid credentials");
       return res.render('admin/login');
