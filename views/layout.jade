@@ -26,13 +26,14 @@ html(lang='en')
         block content
       footer.footer
         p
-          | Powered by AppPortal
+          if nightly
+            a(href='/nightly') Nightly
+            |  |&nbsp;
+          if session.admin
+            a(href='/admin/logout') Logout
           span.pull-right
-            if nightly
-              a(href='/nightly') Nightly
-              |  |&nbsp;
-            if session.admin
-              a(href='/admin/logout') Logout
+            | Powered by AppPortal
+
     script(src='/javascripts/jquery-2.2.4.min.js')
     script(src='/javascripts/bootstrap.min.js')
     block script
