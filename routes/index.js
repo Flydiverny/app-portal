@@ -23,7 +23,16 @@ var findApplication = function (id, match, res) {
   return Application.findOne({id: id})
     .populate({
       path: 'versions',
-      populate: {path: 'compatible', populate: {path: 'type', select: 'name'}},
+      populate: {
+        path: 'compatible',
+        options: {
+          sort: { version: -1}
+        },
+        populate: {
+          path: 'type',
+          select: 'name'
+        }
+      },
       select: 'name changelog filename compatible sortingCode',
       match: match,
       options: {
@@ -109,22 +118,23 @@ router.get("/app/:id/:deptype/:depver", function (req, res, next) {
     .then(function (depVer) {
       console.log("Search fo rapp!");
       return findApplication(req.params.id, {hidden: {$ne: true}, nightly: false}, res).then(function (app) {
-        return {app: app, depVer: depVer}
+        return {app: app, versionId: depVer._id.toString()}
       });
     })
     .then(function (obj) {
-      console.log("Found stuff!");
       var app = obj.app;
-      var depVer = obj.depVer;
+      var versionId = obj.versionId;
 
       var versionsToShow = [];
 
       // Filter show only latest of each minor version.
-      app.versions.forEach(function (ver) {
-        console.log("Foreach!");
-        if (ver.compatible.indexOf(depVer) === -1) {
-          versionsToShow.push(ver);
-        }
+      app.versions.forEach(function (ver,k) {
+        ver.compatible.forEach(function(depversion) {
+          if (depversion._id.toString() === versionId) {
+            versionsToShow.push(ver);
+            return true;
+          }
+        });
       });
 
       app.versions = versionsToShow;
@@ -134,5 +144,3 @@ router.get("/app/:id/:deptype/:depver", function (req, res, next) {
 });
 
 module.exports = router;
-
-
