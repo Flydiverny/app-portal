@@ -8,6 +8,7 @@ block script
         $("#dialogTitle").html($(this).data("version"));
       })
     });
+
     $(function() {
       $('.copy').on('click', function() {
         copyTextToClipboard(location.protocol + "//" + location.host  + $(this).data("link"));
@@ -55,6 +56,9 @@ block content
       h1= title
         if nightly
           span  (Nightly)
+      unless nightly
+        a.btn.btn-primary(href='', data-toggle='modal', data-target='#myModal', data-version="" data-content=changelog) Changelog&nbsp;
+          span.glyphicon.glyphicon-list
       unless showlatest
         unless nightly
           a.btn.btn-primary(href='/download/' + id + '/latest') Download Latest&nbsp;

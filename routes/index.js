@@ -38,7 +38,20 @@ var findApplication = function (id, match, res) {
         sort: {sortingCode: -1}
       }
     }).then(resultOrError(res))
-    .then(buildDependencyList);
+    .then(buildDependencyList)
+    .then(buildChangelog);
+};
+
+var buildChangelog = function (app) {
+  var changelog = "";
+
+  app.versions.forEach(function (version) {
+    changelog += version.changelog + "\n\n\n";
+  });
+
+  app.changelog = changelog;
+
+  return app;
 };
 
 var buildDependencyList = function (app) {
