@@ -70,10 +70,14 @@ var buildDependencyList = function (app) {
   return app;
 };
 
-var renderApp = function (req, res, next, showNightly, showAll) {
+var renderApp = function (req, res, next, showNightly, showAll, showHidden) {
   res.locals.nightly = showNightly;
+  var query = {nightly: showNightly};
+  if (!showHidden) {
+    query.hidden = {$ne: true}
+  }
 
-  findApplication(req.params.id, {hidden: {$ne: true}, nightly: showNightly}, res)
+  findApplication(req.params.id, query, res)
     .then(function (app) {
       if (!showAll) {
         var versionsCode = [];
@@ -119,7 +123,7 @@ router.get("/app/:id", function (req, res, next) {
 });
 
 router.get("/app/:id/all", function (req, res, next) {
-  renderApp(req, res, next, false, true);
+  renderApp(req, res, next, false, true, true);
 });
 
 router.get("/nightly/:id", function (req, res, next) {
