@@ -1,3 +1,46 @@
+/* Space out content a bit */
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/*.header,
+.footer {
+  padding-right: 15px;
+  padding-left: 15px;
+}*/
+
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+}
+
+.footer {
+  color: #777;
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+@media screen and (min-width: 768px) {
+  /* Remove the padding we set earlier */
+  .header,
+  .footer {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+
+
 .thumbnail {
   text-align: center;
 }
@@ -17,4 +60,9 @@
 
 .version-col {
   width: 102px;
+}
+
+.well {
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
