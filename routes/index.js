@@ -46,7 +46,8 @@ var buildChangelog = function (app) {
   var changelog = "";
 
   app.versions.forEach(function (version) {
-    changelog += version.changelog + "\n\n\n";
+    if (version.changelog)
+      changelog += version.changelog + "\n\n\n";
   });
 
   app.changelog = changelog;
