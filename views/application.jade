@@ -69,16 +69,15 @@ block content
           each dep in dependencies
             a.btn.btn-default.btn-sm(type="button", href="/app/" + id + "/" + dep.type.name + "/" + dep.version)= dep.type.name + " " + dep.version
 
-  table.table
+  table.table.versions-table
     thead
       tr
-        th Version
+        th.version-col Version
         th Compatibility
-        th.text-right Download
+        th
     tbody
       each version in versions
         tr
-
           td
             if session.admin
               a.btn.btn-default.btn-sm(href='/admin/editVersion/' + version._id)
@@ -90,7 +89,7 @@ block content
                 span.glyphicon.glyphicon-list
           td
             each dep in version.compatible
-              span.label(style="background-color:" + dep.color + ";margin-right:5px;", id=dep.version)= dep.type.name + " " + dep.version
+              span.label.pull-left(style="background-color:" + dep.color + ";margin-right:5px;margin-bottom:5px;", id=dep.version)= dep.type.name + " " + dep.version
           td.text-right
             a.btn.btn-default.btn-sm.copy.hidden-xs(href="#", data-link='/download/' + version.filename, style="margin-right: 5px;")
               span.glyphicon.glyphicon-copy
