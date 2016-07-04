@@ -67,9 +67,12 @@ var renderApp = function (req, res, next, showNightly, showAll) {
 
         // Filter show only latest of each minor version.
         app.versions.forEach(function (ver) {
-          if (versionsCode.indexOf(Math.floor(ver.sortingCode / 100) * 100) === -1) {
+          var index = versionsCode.indexOf(Math.floor(ver.sortingCode / 100) * 100);
+          if (index === -1) {
             versionsToShow.push(ver);
             versionsCode.push(Math.floor(ver.sortingCode / 100) * 100);
+          } else if (ver.changelog) {
+            versionsToShow[index].changelog += "\n\n" + ver.changelog;
           }
         });
 
@@ -98,7 +101,7 @@ router.get("/icon/:id", function (req, res, next) {
 });
 
 router.get("/app/:id", function (req, res, next) {
-  renderApp(req, res, next, false);
+  renderApp(req, res, next, false, false);
 });
 
 router.get("/app/:id/all", function (req, res, next) {
