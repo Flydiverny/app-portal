@@ -18,7 +18,7 @@ html(lang='en')
               li(class={active: currentUrl === '/admin'}, role='presentation')
                 a(href='/admin') Admin
         if logo
-          img.logo(src=logo)
+          img.hidden-xs.logo(src=logo)
         h3.text-muted= pagetitle
       .well(class=applications ? "shallow" : "")
         if flash

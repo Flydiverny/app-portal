@@ -5,3 +5,4 @@ data
 .idea
 *.iml
 config.json
+public/logo.png
