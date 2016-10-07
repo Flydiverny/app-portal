@@ -23,8 +23,9 @@ const port = config.mongo.port || 27017;
 
 const DATABASE = "mongodb://" + host + ":" + port +  "/" + db;
 
+mongoose.Promise = global.Promise;
+
 // Bootstrap models
-//noinspection BadExpressionStatementJS
 fs.readdirSync(models)
   .filter(file => ~file.search(/^[^\.].*\.js$/))
   .forEach(file => require(path.join(models, file)));
@@ -61,6 +62,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req,res,next){
     res.locals.session = req.session;
     next();
+});
+
+app.use((req, res, next) => {
+  res.locals.currentUrl = req.path;
+  next();
 });
 
 // Routes

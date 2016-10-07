@@ -63,8 +63,11 @@ body {
 }
 
 .well {
-  padding-bottom: 0;
   margin-bottom: 0;
+}
+
+.shallow {
+  padding-bottom: 0;
 }
 
 .logo {
