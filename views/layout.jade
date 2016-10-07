@@ -17,6 +17,8 @@ html(lang='en')
             if session.admin
               li(role='presentation')
                 a(href='/admin') Admin
+        if logo
+          img.logo(src=logo)
         h3.text-muted= pagetitle
       .well
         if flash

@@ -15,6 +15,7 @@ const app = express();
 
 app.locals.pagetitle = config.title || "App Portal";
 app.locals.showlatest = config.showlatest || true;
+app.locals.logo = config.logo || false;
 
 const db = config.mongo.database || "app-portal";
 const host = config.mongo.host || "localhost";

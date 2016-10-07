@@ -66,3 +66,9 @@ body {
   padding-bottom: 0;
   margin-bottom: 0;
 }
+
+.logo {
+  float: left;
+  height: 40px;
+  margin-right: 10px;
+}
