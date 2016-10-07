@@ -3,10 +3,13 @@ A simple portal for distributing mobile applications written in nodejs using mon
 
 ----
 Example config.json file placed in rootdir:
-```
+```json
 {
   "title": "Mobile Portal",
   "token": "keyboard roll",
+  "logo": "/logo.png",
+  "username": "admin",
+  "password": "Private!",
   "mongo" : {
     "database": "app-portal",
     "host": "localhost",
