@@ -9,6 +9,10 @@ block script
       })
     });
 
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+
     $(function() {
       $('.copy').on('click', function() {
         copyTextToClipboard(location.protocol + "//" + location.host  + $(this).data("link"));
@@ -84,7 +88,7 @@ block content
         tr
           td
             if session.admin
-              a.btn.btn-default.btn-sm(href='/admin/editVersion/' + version._id)
+              a.btn.btn-default.btn-sm(href='/admin/editVersion/' + version._id, data-toggle="tooltip", data-placement="top", title="Edit")
                 span.glyphicon.glyphicon-edit
               |&nbsp;
             = version.name
@@ -95,7 +99,7 @@ block content
             each dep in version.compatible
               span.label.pull-left(style="background-color:" + dep.color + ";margin-right:5px;margin-bottom:5px;", id=dep.version)= dep.type.name + " " + dep.version
           td.text-right
-            a.btn.btn-default.btn-sm.copy.hidden-xs(href="#", data-link='/download/' + version.filename, style="margin-right: 5px;")
+            a.btn.btn-default.btn-sm.copy.hidden-xs(href="#", data-link='/download/' + version.filename, style="margin-right: 5px;", data-toggle="tooltip", data-placement="top", title="Copy Download Link")
               span.glyphicon.glyphicon-copy
-            a.btn.btn-default.btn-sm(href='/download/' + version.filename)
+            a.btn.btn-default.btn-sm(href='/download/' + version.filename, data-toggle="tooltip", data-placement="top", title="Download")
               span.glyphicon.glyphicon-download-alt
