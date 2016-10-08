@@ -8,7 +8,13 @@ const DependencyVersion = mongoose.model('DependencyVersion');
 var renderIndex = function (req, res, next) {
   res.locals.applications = true;
 
-  Application.find({hidden: false}).sort({type: 1, title: -1}).then(function (apps) {
+  var query = {hidden: false};
+
+  if (req.session.admin) {
+    query = {};
+  }
+
+  Application.find(query).sort({type: 1, title: -1}).then(function (apps) {
     return res.render('index', {applications: apps});
   }, next);
 };
