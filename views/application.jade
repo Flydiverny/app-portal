@@ -63,8 +63,7 @@ block content
       unless nightly
         a.btn.btn-primary(href='', data-toggle='modal', data-target='#myModal', data-version="" data-content=changelog) Changelog&nbsp;
           span.glyphicon.glyphicon-list
-      unless showlatest
-        unless nightly
+        unless showlatest
           a.btn.btn-primary(href='/download/' + id + '/latest') Download Latest&nbsp;
             span.glyphicon.glyphicon-download-alt
     .col-xs-4
@@ -73,6 +72,8 @@ block content
     .row(style="margin-top: 15px;")
       .col-xs-12
         .btn-group(role="group")
+          if session.admin
+            a.btn.btn-primary.btn-sm(href="/app/" + id + "/all") Show All
           a.btn.btn-info.btn-sm(href="/app/" + id + "/") Show Latest
           each dep in dependencies
             a.btn.btn-default.btn-sm(type="button", href="/app/" + id + "/" + dep.type.name + "/" + dep.version)= dep.type.name + " " + dep.version
