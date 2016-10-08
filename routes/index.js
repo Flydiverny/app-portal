@@ -72,6 +72,10 @@ var buildDependencyList = function (app) {
   return app;
 };
 
+var dependencyCompound = (ver) => {
+  return (ver.compatible) ? ver.compatible.map(c => c._id.toString()).join('') : ver._id.toString();
+}
+
 var renderApp = function (req, res, next, showNightly, showAll, showHidden) {
   res.locals.nightly = showNightly;
   var query = {nightly: showNightly};
@@ -82,16 +86,30 @@ var renderApp = function (req, res, next, showNightly, showAll, showHidden) {
   findApplication(req.params.id, query, res)
     .then(function (app) {
       if (!showAll) {
+        var counter = 0;
         var versionsCode = [];
+        var dependencyMatch = {};
         var versionsToShow = [];
 
         // Filter show only latest of each minor version.
         app.versions.forEach(function (ver) {
+          // Filter patch versions
           var index = versionsCode.indexOf(Math.floor(ver.sortingCode / 100) * 100);
+          let added = false;
+
           if (index === -1) {
-            versionsToShow.push(ver);
-            versionsCode.push(Math.floor(ver.sortingCode / 100) * 100);
-          } else if (ver.changelog) {
+            // Filter similar dependency
+            var depComp = dependencyCompound(ver);
+            index = dependencyMatch[depComp];
+            if (index === undefined) {
+              versionsToShow.push(ver);
+              dependencyMatch[depComp] = counter++;
+              versionsCode.push(Math.floor(ver.sortingCode / 100) * 100);
+              added = true;
+            }
+          }
+
+          if (!added && ver.changelog) {
             versionsToShow[index].changelog += "\n\n" + ver.changelog;
           }
         });
@@ -100,7 +118,7 @@ var renderApp = function (req, res, next, showNightly, showAll, showHidden) {
       }
 
       return res.render("application", app);
-    })
+    }).catch(e => console.error(e))
 };
 
 /* GET home page. */
