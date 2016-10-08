@@ -76,7 +76,7 @@ block content
   table.table.versions-table
     thead
       tr
-        th.version-col Version
+        th(class= session.admin ? "version-col-wide" : "version-col") Version
         th Compatibility
         th
     tbody

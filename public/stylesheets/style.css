@@ -62,6 +62,10 @@ body {
   width: 102px;
 }
 
+.version-col-wide {
+  width: 140px;
+}
+
 .well {
   margin-bottom: 0;
 }
