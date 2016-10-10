@@ -9,11 +9,11 @@ const storage = require('../../util/upload');
 
 var upload = multer({ storage: storage });
 
-router.get('/newApplication', auth, function(req, res, next) {
+router.get('/newApplication', auth, (req, res, next) => {
     return res.render('admin/newApplication');
 });
 
-router.post('/newApplication', auth, upload.single('icon'), function(req, res, next) {
+router.post('/newApplication', auth, upload.single('icon'), (req, res, next) => {
     if (!req.file){
         req.flash("warning", "No valid file specified!");
         return res.redirect("/admin/newApplication");
@@ -31,7 +31,7 @@ router.post('/newApplication', auth, upload.single('icon'), function(req, res, n
         icon: req.file.path,
         link: req.body.link,
         hidden: req.body.hidden ? true : false
-    }).save(function(err, result) {
+    }).save((err, result) => {
         if (err) {
             console.error(err);
             // TODO remove uploaded file here.

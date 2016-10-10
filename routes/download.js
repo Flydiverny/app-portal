@@ -9,9 +9,7 @@ const DependencyVersion = mongoose.model('DependencyVersion');
 var findDependency = function(res, type, ver) {
     return Dependency.findOne({name: type })
         .then(resultOrError(res))
-        .then(function(dep) {
-            return DependencyVersion.findOne({ type: dep._id, version: ver });
-        })
+        .then(dep => DependencyVersion.findOne({ type: dep._id, version: ver }))
         .then(resultOrError(res));
 };
 
