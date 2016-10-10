@@ -48,6 +48,12 @@ var sortingCode = (apk) => {
   return (parseInt(version[0]) * 10000) + (parseInt(version[1])*100) + parseInt(version[2]);
 };
 
+var findCompatibleMatch = function (sortingCode) {
+  let sortFloor = Math.floor(sortingCode/100)*100;
+  let sortRoof = sortFloor + 100;
+  return Version.findOne({ sortingCode: { $gte : sortFloor, $lt: sortRoof }}).sort({sortingCode: -1}).limit(1).catch(err => { return undefined });
+};
+
 var saveFile = function(file) {
   console.log("Creating promise!");
   return new Promise((resolve, reject) => {
@@ -59,29 +65,36 @@ var saveFile = function(file) {
       return;
 
     filename = filename.substring(0, ext);
-    var tokens = filename.split("_"); // [0] = "AppPortal", [1] = "2.0.0"
-    console.log(tokens);
-    if (tokens.length < 2)
+    var [key, version, ...rest] = filename.split("_"); // [0] = "AppPortal", [1] = "2.0.0"
+
+    if (key === undefined || version === undefined)
       return reject("Filename doesn't match expected format");
 
-    Application.findOne({ id: tokens[0] })
+    Application.findOne({ id: key })
         .then((app) => {
           if (!app) return reject("Unknown application");
 
-          var version = new Version({
-            name: tokens[1] + (tokens.length > 2 ? " " + tokens[2] : ""),
-            app: app._id,
-            filename: file.originalname,
-            apk: file.path,
-            sortingCode: sortingCode(file.originalname),
-            nightly: isNightly(file.originalname)
-          }).save((err, versionResult) => {
-            if(err) return reject(err);
+          var code = sortingCode(file.originalname);
+          findCompatibleMatch(code).then(result => {
+            console.log(result);
 
-            app.versions.push(versionResult._id);
-            app.save((err, result) => {
+            new Version({
+              name: version + (rest ? " " + rest.join(' ') : ""),
+              app: app._id,
+              filename: file.originalname,
+              apk: file.path,
+              sortingCode: code,
+              nightly: isNightly(file.originalname),
+              compatible: (result ? result.compatible : undefined) ,
+              hidden: true
+            }).save((err, versionResult) => {
               if(err) return reject(err);
-              return resolve(versionResult);
+
+              app.versions.push(versionResult._id);
+              app.save((err, result) => {
+                if(err) return reject(err);
+                return resolve(versionResult);
+              });
             });
           });
         });
