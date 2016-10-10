@@ -9,9 +9,7 @@ block script
       })
     });
 
-    $(function () {
-      $('[data-toggle="tooltip"]').tooltip()
-    })
+    $('[data-tooltip="tooltip"]').tooltip()
 
     $(function() {
       $('.copy').on('click', function() {
@@ -89,18 +87,18 @@ block content
         tr
           td
             if session.admin
-              a.btn.btn-default.btn-sm(href='/admin/editVersion/' + version._id, data-toggle="tooltip", data-placement="top", title="Edit")
+              a.btn.btn-default.btn-sm(href='/admin/editVersion/' + version._id, data-tooltip="tooltip", data-placement="top", title="Edit")
                 span.glyphicon.glyphicon-edit
               |&nbsp;
             = version.name
             if version.changelog
-              a.btn.btn-default.btn-sm(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.changelog, style="margin-left: 5px")
+              a.btn.btn-default.btn-sm(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.changelog, style="margin-left: 5px", data-tooltip="tooltip", data-placement="top", title="Changelog")
                 span.glyphicon.glyphicon-list
           td
             each dep in version.compatible
               span.label.pull-left(style="background-color:" + dep.color + ";margin-right:5px;margin-bottom:5px;", id=dep.version)= dep.type.name + " " + dep.version
           td.text-right
-            a.btn.btn-default.btn-sm.copy.hidden-xs(href="#", data-link='/download/' + version.filename, style="margin-right: 5px;", data-toggle="tooltip", data-placement="top", title="Copy Download Link")
+            a.btn.btn-default.btn-sm.copy.hidden-xs(href="#", data-link='/download/' + version.filename, style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Copy Download Link")
               span.glyphicon.glyphicon-copy
-            a.btn.btn-default.btn-sm(href='/download/' + version.filename, data-toggle="tooltip", data-placement="top", title="Download")
+            a.btn.btn-default.btn-sm(href='/download/' + version.filename, data-tooltip="tooltip", data-placement="top", title="Download")
               span.glyphicon.glyphicon-download-alt
