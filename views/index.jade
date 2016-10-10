@@ -56,7 +56,7 @@ block content
                 img(src='/icon/' + app.id, alt=app.title + ' Logo')
                 =app.title
             else
-              a.thumbnail(href='/app/' + app.id)
+              a.thumbnail(href='/app/' + app.id + (session.admin ? "/all" : ""))
                 img(src='/icon/' + app.id, alt=app.title + ' Logo')
                 =app.title
     else
