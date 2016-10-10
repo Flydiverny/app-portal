@@ -26,8 +26,8 @@ var returnFile = function(res) {
 		var options = {
 			root: __dirname.replace("routes", ""),
 			headers: {
-				'Content-Type': 'application/octet-stream',
-				'Content-Disposition': 'filename="' + version.filename + '"'
+				'Content-Type': 'application/vnd.android.package-archive',
+				'Content-Disposition': 'attachment; filename="' + version.filename + '"'
 			}
 		};
 
