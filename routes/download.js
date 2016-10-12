@@ -42,14 +42,18 @@ var resultOrError = function(res) {
 	}
 };
 
+var filenameToInsensitive = function(filename) {
+	return "/" + filename + "/i"
+};
+
 router.get('/:filename', function(req, res, next) {
-    findAndReturnFile(res, { filename: req.params.filename });
+    findAndReturnFile(res, { filename: filenameToInsensitive(req.params.filename) });
 });
 
 router.get('/:deptype/:depver/:filename', function(req, res, next) {
     findDependency(res, req.params.deptype, req.params.depver)
         .then(function(depVer) {
-			return findAndReturnFile(res, { filename: req.params.filename, compatible: depVer._id })
+			return findAndReturnFile(res, { filename: filenameToInsensitive(req.params.filename), compatible: depVer._id })
 		});
 });
 
@@ -79,7 +83,7 @@ router.get('/:deptype/:depver/:app/:filename', function(req, res, next) {
         .then(function(app) {
             return findDependency(res, req.params.deptype, req.params.depver)
                 .then(function(depVer) {
-                    return findAndReturnFile(res, { filename: req.params.filename, app: app._id, compatible : depVer._id, hidden: false, nightly: false });
+                    return findAndReturnFile(res, { filename: filenameToInsensitive(req.params.filename), app: app._id, compatible : depVer._id, hidden: false, nightly: false });
                 });
         });
 });
