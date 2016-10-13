@@ -79,3 +79,7 @@ body {
   height: 40px;
   margin-right: 10px;
 }
+
+a.title:hover {
+  text-decoration: none;
+}
