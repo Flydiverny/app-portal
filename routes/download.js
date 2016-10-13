@@ -43,7 +43,7 @@ var resultOrError = function(res) {
 };
 
 var filenameToInsensitive = function(filename) {
-	return "/" + filename + "/i"
+	return new RegExp(filename, "i");
 };
 
 router.get('/:filename', function(req, res, next) {
