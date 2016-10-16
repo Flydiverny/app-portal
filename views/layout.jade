@@ -16,7 +16,7 @@ html(lang='en')
               a(href='/') Home
             if session.admin
               li(class={active: currentUrl === '/admin'}, role='presentation')
-                a(href='/admin') Admin
+                a(href='/admin/') Admin
         a.title(href='/')
           if logo
             img.hidden-xs.logo(src=logo)
@@ -30,10 +30,10 @@ html(lang='en')
       footer.footer
         p
           span.pull-left
-            a(href='/download') Latest
+            a(href='/download/') Latest
             if nightly
               |  |&nbsp;
-              a(href='/nightly') Nightly
+              a(href='/nightly/') Nightly
             if session.admin
               |  |&nbsp;
               a(href='/admin/logout') Logout
