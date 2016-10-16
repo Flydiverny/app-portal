@@ -147,9 +147,13 @@ router.post('/newVersion', auth, uploadApk.array('apk'), (req, res, next) => {
   }
 
   mapFiles(req.files).then((results) => {
-    console.log("SUCCESS??");
     req.flash("success", "All files successfully uploaded!");
-    res.redirect("/admin/newVersion");
+
+    if (results.length === 1) {
+      res.redirect("/admin/editVersion/" + results[0]._id);
+    } else {
+      res.redirect("/admin/newVersion");
+    }
   }, (results) => {
     console.log("ERROR??");
     req.flash("danger", JSON.stringify(results));
