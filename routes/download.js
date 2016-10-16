@@ -63,21 +63,28 @@ var filenameToInsensitive = function(filename) {
 
 router.get('/', function(req, res, next) {
 
-	var query = {hidden: false};
+	var query = {hidden: false, nightly: false};
 
 	if (req.session.admin) {
-		query = {};
+		query = {nightly: false};
 	}
 
-	Version.find(query)
-		.select('name filename app changelog')
-		.sort({_id: -1})
-		.populate({path: 'app', select: 'id title'})
-		.limit(10)
+	Application.find({hidden: {$ne: true}})
+		.select("_id")
 		.then(resultOrError(res))
 		.then(apps => {
-			return res.render('download', {versions: apps});
-		}, next)
+			query.app = { $in : apps };
+
+			return Version.find(query)
+				.select('name filename app changelog')
+				.sort({_id: -1})
+				.populate({path: 'app', select: 'id title hidden' })
+				.limit(10)
+				.then(resultOrError(res))
+				.then(apps => {
+					return res.render('download', {versions: apps});
+				}, next);
+		})
 		.catch(catcher(req));
 });
 
