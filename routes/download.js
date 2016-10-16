@@ -6,18 +6,47 @@ const Version = mongoose.model('Version');
 const Dependency = mongoose.model('Dependency');
 const DependencyVersion = mongoose.model('DependencyVersion');
 
-var findDependency = function(res, type, ver) {
-    return Dependency.findOne({name: type })
-        .then(resultOrError(res))
-        .then(dep => DependencyVersion.findOne({ type: dep._id, version: ver }))
-        .then(resultOrError(res));
+var allInclusive = function(req, res, next) {
+	var query = { hidden: false, nightly: false };
+
+	if (req.params.filename) {
+		query.filename = filenameToInsensitive(req.params.filename);
+	}
+
+	var promise = Promise.resolve(true);
+
+	if (req.params.app) {
+		promise = promise
+			.then(result => Application.findOne({ id: req.params.app }, '_id'))
+			.then(app => {
+				query.app = app._id;
+			});
+	}
+
+	if (req.params.deptype && req.params.depver) {
+		promise = promise
+			.then(r => Dependency.findOne({name: req.params.deptype }, '_id'))
+			.then(dep => DependencyVersion.findOne({ type: dep._id, version: req.params.depver }, '_id'))
+			.then(function(depVer) {
+				query.compatible = depVer._id;
+			});
+	}
+
+	return promise
+		.then(r => Version.findOne(query, 'name apk filename downloads').sort({ sortingCode : -1}))
+		.then(version => {
+			if (!version) {
+				throw new Error("No result available");
+			}
+
+			return version;
+		})
+		.catch(catcher(req, res));
 };
 
-var findAndReturnFile = function(res, query) {
-    return Version.findOne(query, 'apk filename downloads')
-        .sort({ sortingCode : -1})
-		.then(resultOrError(res))
-        .then((version) => {
+var downloadFile = function(req, res, next) {
+	return allInclusive(req, res, next)
+		.then((version) => {
 			var options = {
 				root: __dirname.replace("routes", ""),
 				headers: {
@@ -41,19 +70,28 @@ var findAndReturnFile = function(res, query) {
 		});
 };
 
-var resultOrError = function(res) {
-	return function(value) {
-			if (!value) {
-				res.sendStatus(404);
-				throw new Error("No result available");
-			}
-			return value;
-	}
+var getMeta = function(req, res, next) {
+	return allInclusive(req, res, next)
+		.then((version) => {
+			var fullUrl = req.protocol + '://' + req.get('host');
+
+			console.log(req);
+			res.set('Content-Type', 'application/json');
+			res.send({
+				version: version.name,
+				download: fullUrl + "/" + version.filename
+			});
+
+			return version;
+		})
 };
 
-var catcher = function(req) {
-	return err => {
+var catcher = function(req, res) {
+	return (err) => {
 		console.error("Failed on path: " + req.path + " with err: " + err);
+		res.sendStatus(404);
+
+		return value;
 	}
 };
 
@@ -71,7 +109,6 @@ router.get('/', function(req, res, next) {
 
 	Application.find({hidden: {$ne: true}})
 		.select("_id")
-		.then(resultOrError(res))
 		.then(apps => {
 			query.app = { $in : apps };
 
@@ -79,60 +116,30 @@ router.get('/', function(req, res, next) {
 				.select('name filename app changelog')
 				.sort({_id: -1})
 				.populate({path: 'app', select: 'id title hidden' })
-				.limit(10)
-				.then(resultOrError(res))
-				.then(apps => {
-					return res.render('download', {versions: apps});
-				}, next);
+				.limit(10);
 		})
-		.catch(catcher(req));
-});
-
-router.get('/:filename', function(req, res, next) {
-    findAndReturnFile(res, { filename: filenameToInsensitive(req.params.filename) })
-		.catch(catcher(req));
-});
-
-router.get('/:deptype/:depver/:filename', function(req, res, next) {
-    findDependency(res, req.params.deptype, req.params.depver)
-        .then(function(depVer) {
-			return findAndReturnFile(res, { filename: filenameToInsensitive(req.params.filename), compatible: depVer._id })
+		.then(apps => {
+			return res.render('download', {versions: apps});
 		})
-		.catch(catcher(req));
+		.catch(next);
 });
 
-router.get('/:app/latest', function(req, res, next) {
-	Application.findOne({ id: req.params.app }, '_id')
-	.then(resultOrError(res))
-	.then(function(app) {
-		return findAndReturnFile(res, { app: app._id, hidden: false, nightly: false });
-	})
-	.catch(catcher(req));
-});
+router.get('/:filename', downloadFile);
+router.get('/:filename/meta', getMeta);
 
+router.get('/:app/latest', downloadFile);
+router.get('/:app/:filename', downloadFile);
+router.get('/:app/latest/meta', getMeta);
+router.get('/:app/:filename/meta', getMeta);
 
-router.get('/:deptype/:depver/:app/latest', function(req, res, next) {
-	Application.findOne({ id: req.params.app }, '_id')
-	.then(resultOrError(res))
-	.then(function(app) {
-		return findDependency(res, req.params.deptype, req.params.depver)
-            .then(function(depVer) {
-                return findAndReturnFile(res, { app: app._id, compatible : depVer._id, hidden: false, nightly: false });
-			});
-	})
-	.catch(catcher(req));
-});
+router.get('/:deptype/:depver/latest', downloadFile);
+router.get('/:deptype/:depver/:filename', downloadFile);
+router.get('/:deptype/:depver/latest/meta', getMeta);
+router.get('/:deptype/:depver/:filename/meta', getMeta);
 
-router.get('/:deptype/:depver/:app/:filename', function(req, res, next) {
-    Application.findOne({ id: req.params.app }, '_id')
-        .then(resultOrError(res))
-        .then(function(app) {
-            return findDependency(res, req.params.deptype, req.params.depver)
-                .then(function(depVer) {
-                    return findAndReturnFile(res, { filename: filenameToInsensitive(req.params.filename), app: app._id, compatible : depVer._id, hidden: false, nightly: false });
-                });
-        })
-		.catch(catcher(req));
-});
+router.get('/:app/:deptype/:depver/latest', downloadFile);
+router.get('/:app/:deptype/:depver/:filename', downloadFile);
+router.get('/:app/:deptype/:depver/latest/meta', getMeta);
+router.get('/:app/:deptype/:depver/:filename/meta', getMeta);
 
 module.exports = router;
