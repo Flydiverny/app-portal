@@ -42,7 +42,7 @@ var findApplication = (id, match, res) => {
           select: 'name filterable'
         }
       },
-      select: 'name changelog filename compatible sortingCode',
+      select: 'name changelog filename compatible sortingCode downloads',
       match: match,
       options: {
         sort: {sortingCode: -1}
