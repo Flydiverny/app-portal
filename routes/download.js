@@ -132,9 +132,7 @@ router.get('/:app/:filename', downloadFile);
 router.get('/:app/latest/meta', getMeta);
 router.get('/:app/:filename/meta', getMeta);
 
-router.get('/:deptype/:depver/latest', downloadFile);
 router.get('/:deptype/:depver/:filename', downloadFile);
-router.get('/:deptype/:depver/latest/meta', getMeta);
 router.get('/:deptype/:depver/:filename/meta', getMeta);
 
 router.get('/:app/:deptype/:depver/latest', downloadFile);
