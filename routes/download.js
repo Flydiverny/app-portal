@@ -6,47 +6,43 @@ const Version = mongoose.model('Version');
 const Dependency = mongoose.model('Dependency');
 const DependencyVersion = mongoose.model('DependencyVersion');
 
-var allInclusive = function(req, res, next) {
+var queryPromise = function (params) {
 	var query = { hidden: false, nightly: false };
 
-	if (req.params.filename) {
-		query.filename = filenameToInsensitive(req.params.filename);
+	if (params.filename) {
+		query.filename = filenameToInsensitive(params.filename);
 	}
 
-	var promise = Promise.resolve(true);
+	var promise = Promise.resolve(query);
 
-	if (req.params.app) {
+	if (params.app) {
 		promise = promise
-			.then(result => Application.findOne({ id: req.params.app }, '_id'))
+			.then(result => Application.findOne({ id: params.app }, '_id'))
 			.then(app => {
 				query.app = app._id;
+
+				return query;
 			});
 	}
 
-	if (req.params.deptype && req.params.depver) {
+	if (params.deptype && params.depver) {
 		promise = promise
-			.then(r => Dependency.findOne({name: req.params.deptype }, '_id'))
-			.then(dep => DependencyVersion.findOne({ type: dep._id, version: req.params.depver }, '_id'))
+			.then(r => Dependency.findOne({name: params.deptype }, '_id'))
+			.then(dep => DependencyVersion.findOne({ type: dep._id, version: params.depver }, '_id'))
 			.then(function(depVer) {
 				query.compatible = depVer._id;
+
+				return query;
 			});
 	}
 
-	return promise
-		.then(r => Version.findOne(query, 'name apk filename downloads').sort({ sortingCode : -1}))
-		.then(version => {
-			if (!version) {
-				throw new Error("No result available");
-			}
-
-			return version;
-		})
-		.catch(catcher(req, res));
+	return promise;
 };
 
 var downloadFile = function(req, res, next) {
-	return allInclusive(req, res, next)
-		.then((version) => {
+	return queryPromise(req.params)
+		.then(query => Version.findOne(query, 'apk filename downloads').sort({ sortingCode : -1}))
+		.then(version => {
 			var options = {
 				root: __dirname.replace("routes", ""),
 				headers: {
@@ -59,7 +55,7 @@ var downloadFile = function(req, res, next) {
 
 			return version;
 		})
-		.then((version) => {
+		.then(version => {
 			version.downloads++;
 			version.save((err, result) => {
 				if (err)
@@ -67,23 +63,47 @@ var downloadFile = function(req, res, next) {
 			});
 
 			return version;
-		});
+		})
+		.catch(catcher(req, res));
 };
 
 var getMeta = function(req, res, next) {
-	return allInclusive(req, res, next)
+	return queryPromise(req.params)
+		.then(query => Version.findOne(query, 'name compatible')
+			.populate({
+				path: 'compatible',
+				select: 'version type',
+				options: {
+					sort: {version: -1}
+				},
+				populate: {
+					path: 'type',
+					select: 'name'
+				}
+			})
+			.sort({ sortingCode : -1})
+		)
 		.then((version) => {
-			var fullUrl = req.protocol + '://' + req.get('host');
-
-			console.log(req);
-			res.set('Content-Type', 'application/json');
-			res.send({
+			var response = {
 				version: version.name,
-				download: fullUrl + "/" + version.filename
+				compatible: {}
+			};
+
+			version.compatible.forEach((v) => {
+				if (!response.compatible[v.type.name]) {
+					response.compatible[v.type.name] = [];
+				}
+
+				response.compatible[v.type.name].push(v.version)
 			});
+
+			res.set('Content-Type', 'application/json');
+			res.send(response);
+		/*	res.send();*/
 
 			return version;
 		})
+		.catch(catcher(req, res));
 };
 
 var catcher = function(req, res) {
