@@ -1,0 +1,38 @@
+script(type='text/javascript').
+    $(function () {
+        $('[data-toggle="modal"]').on('click', function() {
+            $("#dialogBody").html($(this).data("content"));
+            $("#dialogTitle").html($(this).data("version"));
+        })
+    });
+
+    $('[data-tooltip="tooltip"]').tooltip()
+
+    $(function() {
+        $('.copy').on('click', function() {
+            copyTextToClipboard(location.protocol + "//" + location.host  + $(this).data("link"));
+        });
+    });
+
+    // modification of http://stackoverflow.com/a/30810322/598962
+    function copyTextToClipboard(text) {
+        var textArea = document.createElement("textarea");
+
+        textArea.style.position = 'fixed';
+        textArea.style.top = 0;
+        textArea.style.left = 0;
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+        textArea.style.background = 'transparent';
+        textArea.value = text;
+
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+        }
+
+        document.body.removeChild(textArea);
+    }

@@ -55,6 +55,25 @@ var filenameToInsensitive = function(filename) {
 	return new RegExp(filename, "i");
 };
 
+router.get('/', function(req, res, next) {
+
+	var query = {hidden: false};
+
+	if (req.session.admin) {
+		query = {};
+	}
+
+	Version.find(query)
+		.select('name filename app changelog')
+		.sort({_id: -1})
+		.populate({path: 'app', select: 'id title'})
+		.limit(10)
+		.then(resultOrError(res))
+		.then(apps => {
+			return res.render('download', {versions: apps});
+		}, next);
+});
+
 router.get('/:filename', function(req, res, next) {
     findAndReturnFile(res, { filename: filenameToInsensitive(req.params.filename) });
 });

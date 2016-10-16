@@ -1,0 +1,36 @@
+extends layout
+
+block script
+    include includes/version-js
+
+block content
+    include includes/changelog-dialog
+    .row
+        .col-xs-8
+            h1 Download
+            h4 Showing 10 latest releases
+
+    table.table.versions-table
+        thead
+            tr
+                th Version
+                th
+        tbody
+            each version in versions
+                tr
+                    td
+                        a(href="/app/" + version.app.id)
+                            img.mini-icon(src='/icon/' + version.app.id)
+                        if session.admin
+                            a.btn.btn-default.btn-sm(href='/admin/editVersion/' + version._id, data-tooltip="tooltip", data-placement="top", title="Edit")
+                                span.glyphicon.glyphicon-edit
+                            |&nbsp;
+                        if version.changelog
+                            a.btn.btn-default.btn-sm(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.changelog, style="margin-right: 5px", data-tooltip="tooltip", data-placement="top", title="Changelog")
+                                span.glyphicon.glyphicon-list
+                        = version.app.title + " " + version.name
+                    td.text-right
+                        a.btn.btn-default.btn-sm.copy.hidden-xs(href="#", data-link='/download/' + version.filename, style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Copy Download Link")
+                            span.glyphicon.glyphicon-copy
+                        a.btn.btn-default.btn-sm(href='/download/' + version.filename, data-tooltip="tooltip", data-placement="top", title="Download")
+                            span.glyphicon.glyphicon-download-alt

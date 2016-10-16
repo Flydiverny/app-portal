@@ -83,3 +83,8 @@ body {
 a.title:hover {
   text-decoration: none;
 }
+
+.mini-icon {
+  width: 32px;
+  margin-right: 5px;
+}
