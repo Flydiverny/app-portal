@@ -14,8 +14,17 @@ var findDependency = function(res, type, ver) {
 };
 
 var findAndReturnFile = function(res, query) {
-    return Version.findOne(query, 'apk filename')
+    return Version.findOne(query, 'apk filename downloads')
         .sort({ sortingCode : -1})
+		.then((version) => {
+			version.downloads++;
+			version.save((err, result) => {
+				if (err)
+					console.error("Failed updating download count for " + version);
+			});
+
+			return version;
+		})
         .then(returnFile(res));
 };
 

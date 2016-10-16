@@ -11,7 +11,8 @@ const VersionSchema = new Schema({
   hidden: { type: Boolean, required: true, default: false },
   nightly: { type: Boolean, required: true },
   mapping: { type: String },
-  changelog: { type: String }
+  changelog: { type: String },
+  downloads: { type: Number, default: 0 }
 });
 
 mongoose.model('Version', VersionSchema);
