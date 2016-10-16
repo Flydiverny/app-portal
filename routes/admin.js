@@ -48,10 +48,10 @@ var sortingCode = (apk) => {
   return (parseInt(version[0]) * 10000) + (parseInt(version[1])*100) + parseInt(version[2]);
 };
 
-var findCompatibleMatch = function (sortingCode) {
+var findCompatibleMatch = function (appId, sortingCode) {
   let sortFloor = Math.floor(sortingCode/100)*100;
   let sortRoof = sortFloor + 100;
-  return Version.findOne({ sortingCode: { $gte : sortFloor, $lt: sortRoof }}).sort({sortingCode: -1}).limit(1).catch(err => { return undefined });
+  return Version.findOne({ app: appId, sortingCode: { $gte : sortFloor, $lt: sortRoof }}).sort({sortingCode: -1}).limit(1).catch(err => { return undefined });
 };
 
 var saveFile = function(file) {
@@ -75,8 +75,7 @@ var saveFile = function(file) {
           if (!app) return reject("Unknown application");
 
           var code = sortingCode(file.originalname);
-          findCompatibleMatch(code).then(result => {
-            console.log(result);
+          findCompatibleMatch(app._id, code).then(result => {
 
             new Version({
               name: version + (rest ? " " + rest.join(' ') : ""),
