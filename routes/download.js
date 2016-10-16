@@ -96,7 +96,7 @@ var catcher = function(req, res) {
 };
 
 var filenameToInsensitive = function(filename) {
-	return new RegExp(filename, "i");
+	return new RegExp("^" + filename + "$", "i");
 };
 
 router.get('/', function(req, res, next) {
