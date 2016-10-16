@@ -5,6 +5,7 @@ const Application = mongoose.model('Application');
 const Version = mongoose.model('Version');
 const Dependency = mongoose.model('Dependency');
 const DependencyVersion = mongoose.model('DependencyVersion');
+const escapeStringRegexp = require('escape-string-regexp');
 
 var queryPromise = function (params) {
 	var query = { hidden: false, nightly: false };
@@ -116,7 +117,7 @@ var catcher = function(req, res) {
 };
 
 var filenameToInsensitive = function(filename) {
-	return new RegExp("^" + filename + "$", "i");
+	return new RegExp("^" + escapeStringRegexp(filename) + "$", "i");
 };
 
 router.get('/', function(req, res, next) {
