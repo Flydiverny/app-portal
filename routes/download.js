@@ -8,7 +8,7 @@ const DependencyVersion = mongoose.model('DependencyVersion');
 const escapeStringRegexp = require('escape-string-regexp');
 
 var queryPromise = function (params) {
-	var query = { hidden: false, nightly: false };
+	var query = { hidden: false, nightly: false, released: { $ne : false } };
 
 	if (params.filename) {
 		query.filename = filenameToInsensitive(params.filename);
