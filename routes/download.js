@@ -8,7 +8,7 @@ const DependencyVersion = mongoose.model('DependencyVersion');
 const escapeStringRegexp = require('escape-string-regexp');
 
 var queryPromise = function (params) {
-	var query = { hidden: false, nightly: false, released: { $ne : false } };
+	var query = { nightly: false, released: { $ne : false } };
 
 	if (params.filename) {
 		query.filename = filenameToInsensitive(params.filename);
@@ -110,6 +110,7 @@ var getMeta = function(req, res, next) {
 var catcher = function(req, res) {
 	return (err) => {
 		console.error("Failed on path: " + req.path + " with err: " + err);
+		console.error(err.stack);
 		res.sendStatus(404);
 
 		return value;
