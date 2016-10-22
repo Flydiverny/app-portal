@@ -127,7 +127,7 @@ var filenameToInsensitive = function(filename) {
 
 router.get('/', function(req, res, next) {
 
-	var query = {hidden: false, nightly: false};
+	var query = {released: true, hidden: false, nightly: false};
 
 	if (req.session.admin) {
 		query = {nightly: false};
@@ -139,14 +139,12 @@ router.get('/', function(req, res, next) {
 			query.app = { $in : apps };
 
 			return Version.find(query)
-				.select('name filename app changelog')
+				.select('name filename app changelog released downloadable')
 				.sort({_id: -1})
-				.populate({path: 'app', select: 'id title hidden' })
+				.populate({path: 'app', select: 'id title' })
 				.limit(10);
 		})
-		.then(apps => {
-			return res.render('download', {versions: apps});
-		})
+		.then(apps => res.render('download', {versions: apps}))
 		.catch(next);
 });
 

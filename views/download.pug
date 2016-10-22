@@ -30,7 +30,10 @@ block content
                                 span.glyphicon.glyphicon-list
                         = version.app.title + " " + version.name
                     td.text-right
-                        a.btn.btn-default.btn-sm.copy.hidden-xs(href="#", data-link='/download/' + version.filename, style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Copy Download Link")
-                            span.glyphicon.glyphicon-copy
-                        a.btn.btn-default.btn-sm(href='/download/' + version.filename, data-tooltip="tooltip", data-placement="top", title="Download")
-                            span.glyphicon.glyphicon-download-alt
+                        if version.downloadable
+                            a.btn.btn-default.btn-sm.copy.hidden-xs(href="#", data-link='/download/' + version.filename, style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Copy Download Link")
+                                span.glyphicon.glyphicon-copy
+                            a.btn.btn-default.btn-sm(href='/download/' + version.filename, data-tooltip="tooltip", data-placement="top", title="Download")
+                                span.glyphicon.glyphicon-download-alt
+                        else
+                            span.glyphicon.glyphicon-ban-circle(data-tooltip="tooltip", data-placement="top", title="Download blocked")
