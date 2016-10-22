@@ -51,8 +51,21 @@ block content
               span.label.pull-left(style="background-color:" + dep.color + ";margin-right:5px;margin-bottom:5px;", id=dep.version)= dep.type.name + " " + dep.version
           td.text-right
             if session.admin
-             span.badge.hidden-xs(style="margin-right: 5px;")= version.downloads
-            a.btn.btn-default.btn-sm.copy.hidden-xs(href="#", data-link='/download/' + version.filename, style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Copy Download Link")
-              span.glyphicon.glyphicon-copy
-            a.btn.btn-default.btn-sm(href='/download/' + version.filename, data-tooltip="tooltip", data-placement="top", title="Download")
-              span.glyphicon.glyphicon-download-alt
+              span.badge.hidden-xs(style="margin-right: 5px;") #{version.downloads}
+              if version.released
+                span.glyphicon.glyphicon-send.text-success(style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Released")
+                unless version.hidden
+                  span.glyphicon.glyphicon-eye-open.text-success(style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Listed")
+                else
+                  span.glyphicon.glyphicon-eye-close.text-warning(style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Hidden")
+              else
+                span.glyphicon.glyphicon-warning-sign.text-warning(style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Not Released")
+
+            if version.released
+              if version.downloadable
+                a.btn.btn-default.btn-sm.copy.hidden-xs(href="#", data-link='/download/' + version.filename, style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Copy Download Link")
+                  span.glyphicon.glyphicon-copy
+                a.btn.btn-default.btn-sm(href='/download/' + version.filename, data-tooltip="tooltip", data-placement="top", title="Download")
+                  span.glyphicon.glyphicon-download-alt
+              else
+                span.glyphicon.glyphicon-ban-circle(data-tooltip="tooltip", data-placement="top", title="Download blocked")
