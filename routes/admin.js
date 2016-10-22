@@ -85,7 +85,6 @@ var saveFile = function(file) {
               sortingCode: code,
               nightly: isNightly(file.originalname),
               compatible: (result ? result.compatible : undefined) ,
-              hidden: true
             }).save((err, versionResult) => {
               if(err) return reject(err);
 
@@ -181,7 +180,9 @@ router.post('/editVersion/:id', auth, (req, res, next) => {
     if (!version) return res.sendStatus(404);
 
     version.compatible = req.body.dependency;
-    version.hidden = req.body.hidden ? true : false;
+    version.released = req.body.released ? true : false;
+    version.hidden = req.body.listed ? false : true;
+    version.downloadable = req.body.downloadable ? true : false;
     version.changelog = req.body.changelog;
 
     version.save((err, result) => {
@@ -191,8 +192,6 @@ router.post('/editVersion/:id', auth, (req, res, next) => {
     });
   });
 });
-
-
 
 router.get('/', (req, res, next) => {
   if (req.session.admin) {
