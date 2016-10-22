@@ -47,7 +47,7 @@ block content
             = version.name
             if version.changelog
               +tooltip("Changelog")
-                a.btn.btn-default.btn-sm.left5(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.collectedChangelog)
+                a.btn.btn-default.btn-sm.left5(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.collectedChangelog ? version.collectedChangelog : [version.changelog])
                   +icon("list")
           td
             each dep in version.compatible
