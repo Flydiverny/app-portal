@@ -149,6 +149,11 @@
         }
       }
     },
+    "bson": {
+      "version": "0.5.6",
+      "from": "bson@>=0.5.6 <0.6.0",
+      "resolved": "https://registry.npmjs.org/bson/-/bson-0.5.6.tgz"
+    },
     "buffer-shims": {
       "version": "1.0.0",
       "from": "buffer-shims@>=1.0.0 <2.0.0",
@@ -289,6 +294,11 @@
       "version": "1.1.1",
       "from": "ee-first@1.1.1",
       "resolved": "https://registry.npmjs.org/ee-first/-/ee-first-1.1.1.tgz"
+    },
+    "es6-promise": {
+      "version": "3.2.1",
+      "from": "es6-promise@3.2.1",
+      "resolved": "https://registry.npmjs.org/es6-promise/-/es6-promise-3.2.1.tgz"
     },
     "escape-string-regexp": {
       "version": "1.0.5",
@@ -655,29 +665,14 @@
       }
     },
     "mongodb": {
-      "version": "2.2.10",
-      "from": "mongodb@>=2.2.10 <3.0.0",
-      "resolved": "https://registry.npmjs.org/mongodb/-/mongodb-2.2.10.tgz",
+      "version": "2.2.11",
+      "from": "mongodb@2.2.11",
+      "resolved": "https://registry.npmjs.org/mongodb/-/mongodb-2.2.11.tgz",
       "dependencies": {
-        "bson": {
-          "version": "0.5.5",
-          "from": "bson@>=0.5.5 <0.6.0",
-          "resolved": "https://registry.npmjs.org/bson/-/bson-0.5.5.tgz"
-        },
-        "es6-promise": {
-          "version": "3.2.1",
-          "from": "es6-promise@3.2.1",
-          "resolved": "https://registry.npmjs.org/es6-promise/-/es6-promise-3.2.1.tgz"
-        },
         "isarray": {
           "version": "1.0.0",
           "from": "isarray@>=1.0.0 <1.1.0",
           "resolved": "https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz"
-        },
-        "mongodb-core": {
-          "version": "2.0.12",
-          "from": "mongodb-core@2.0.12",
-          "resolved": "https://registry.npmjs.org/mongodb-core/-/mongodb-core-2.0.12.tgz"
         },
         "readable-stream": {
           "version": "2.1.5",
@@ -686,15 +681,33 @@
         }
       }
     },
+    "mongodb-core": {
+      "version": "2.0.13",
+      "from": "mongodb-core@2.0.13",
+      "resolved": "https://registry.npmjs.org/mongodb-core/-/mongodb-core-2.0.13.tgz"
+    },
     "mongoose": {
-      "version": "4.6.3",
-      "from": "mongoose@>=4.6.3 <5.0.0",
-      "resolved": "https://registry.npmjs.org/mongoose/-/mongoose-4.6.3.tgz",
+      "version": "4.6.4",
+      "from": "mongoose@4.6.4",
+      "resolved": "https://registry.npmjs.org/mongoose/-/mongoose-4.6.4.tgz",
       "dependencies": {
-        "bson": {
-          "version": "0.5.5",
-          "from": "bson@>=0.5.4 <0.6.0",
-          "resolved": "https://registry.npmjs.org/bson/-/bson-0.5.5.tgz"
+        "isarray": {
+          "version": "1.0.0",
+          "from": "isarray@>=1.0.0 <1.1.0"
+        },
+        "mongodb": {
+          "version": "2.2.10",
+          "from": "mongodb@2.2.10",
+          "resolved": "https://registry.npmjs.org/mongodb/-/mongodb-2.2.10.tgz"
+        },
+        "mongodb-core": {
+          "version": "2.0.12",
+          "from": "mongodb-core@2.0.12",
+          "resolved": "https://registry.npmjs.org/mongodb-core/-/mongodb-core-2.0.12.tgz"
+        },
+        "readable-stream": {
+          "version": "2.1.5",
+          "from": "readable-stream@2.1.5"
         }
       }
     },
@@ -743,9 +756,9 @@
       "resolved": "https://registry.npmjs.org/mpromise/-/mpromise-0.5.5.tgz"
     },
     "mquery": {
-      "version": "1.11.0",
-      "from": "mquery@1.11.0",
-      "resolved": "https://registry.npmjs.org/mquery/-/mquery-1.11.0.tgz",
+      "version": "2.0.0",
+      "from": "mquery@2.0.0",
+      "resolved": "https://registry.npmjs.org/mquery/-/mquery-2.0.0.tgz",
       "dependencies": {
         "bluebird": {
           "version": "2.10.2",
