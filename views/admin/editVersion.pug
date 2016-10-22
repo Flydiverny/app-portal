@@ -16,7 +16,7 @@ block content
             option(value=dependency._id)= dependency.type.name + " " + dependency.version
     .form-group
       label(for='changelog') Changelog
-      textarea#changelog.form-control(name='changelog', placeholder='Changelog')= version.changelog
+      textarea#changelog.form-control(name='changelog', placeholder='Changelog', rows="10")= version.changelog
     .checkbox
       label(for='released')
         input#released(type='checkbox', checked=version.released, name='released')
