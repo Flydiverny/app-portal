@@ -37,7 +37,7 @@ block content
     tbody
       each version in versions
         tr
-          td
+          td.version-font
             if session.admin
               a.btn.btn-default.btn-sm(href='/admin/editVersion/' + version._id, data-tooltip="tooltip", data-placement="top", title="Edit")
                 span.glyphicon.glyphicon-edit
