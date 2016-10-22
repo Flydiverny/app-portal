@@ -7,8 +7,12 @@ const Dependency = mongoose.model('Dependency');
 const DependencyVersion = mongoose.model('DependencyVersion');
 const escapeStringRegexp = require('escape-string-regexp');
 
-var queryPromise = function (params) {
-	var query = { nightly: false, released: { $ne : false } };
+var queryPromise = function (reqQuery, params) {
+	var query = { released: true, downloadable: true };
+
+	if (reqQuery.force !== undefined) {
+		query = {};
+	}
 
 	if (params.filename) {
 		query.filename = filenameToInsensitive(params.filename);
@@ -41,7 +45,7 @@ var queryPromise = function (params) {
 };
 
 var downloadFile = function(req, res, next) {
-	return queryPromise(req.params)
+	return queryPromise(req.query, req.params)
 		.then(query => Version.findOne(query, 'apk filename downloads').sort({ sortingCode : -1}))
 		.then(version => {
 			var options = {
@@ -69,7 +73,7 @@ var downloadFile = function(req, res, next) {
 };
 
 var getMeta = function(req, res, next) {
-	return queryPromise(req.params)
+	return queryPromise(req.query, req.params)
 		.then(query => Version.findOne(query, 'name compatible')
 			.populate({
 				path: 'compatible',
