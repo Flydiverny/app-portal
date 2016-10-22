@@ -43,21 +43,20 @@ block content
         h1(style="margin-top:0")
           a(href="/") Go to Release
   .row.applications
-    if applications.length > 0
-      each app in applications
-        .col-xs-6.col-md-3.application.text-center(id=app.id, class=app.type)
-          if app.type === 'ios'
-            a.thumbnail(href=app.link)
+    each app in applications
+      .col-xs-6.col-md-3.application.text-center(id=app.id, class=app.type)
+        if app.type === 'ios'
+          a.thumbnail(href=app.link)
+            img(src='/icon/' + app.id, alt=app.title + ' Logo')
+            =app.title
+        else
+          if nightly
+            a.thumbnail(href='/nightly/' + app.id)
               img(src='/icon/' + app.id, alt=app.title + ' Logo')
               =app.title
           else
-            if nightly
-              a.thumbnail(href='/nightly/' + app.id)
-                img(src='/icon/' + app.id, alt=app.title + ' Logo')
-                =app.title
-            else
-              a.thumbnail(href='/app/' + app.id + (session.admin ? "/all" : ""))
-                img(src='/icon/' + app.id, alt=app.title + ' Logo')
-                =app.title
+            a.thumbnail(href='/app/' + app.id + (session.admin ? "/all" : ""))
+              img(src='/icon/' + app.id, alt=app.title + ' Logo')
+              =app.title
     else
-      .col-md-12 Ther are no apps!
+      .col-md-12 There are no apps!
