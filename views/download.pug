@@ -29,7 +29,7 @@ block content
                                     +icon("edit")
                         if version.changelog
                             +tooltip("Changelog")
-                                a.btn.btn-default.btn-sm.right5(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.changelog)
+                                a.btn.btn-default.btn-sm.right5(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=[version.changelog])
                                     +icon("list")
                         = version.app.title + " " + version.name
                     td.text-right
