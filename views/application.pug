@@ -13,7 +13,7 @@ block content
         if nightly
           span  (Nightly)
       unless nightly
-        a.btn.btn-primary(href='', data-toggle='modal', data-target='#myModal', data-version="" data-content=changelog) Changelog
+        a.btn.btn-primary(href='', data-toggle='modal', data-target='#myModal', data-version="", data-content=changelog) Changelog
           +icon("list").left5
         unless showlatest
           a.btn.btn-primary(href='/download/' + id + '/latest') Download Latest
@@ -47,7 +47,7 @@ block content
             = version.name
             if version.changelog
               +tooltip("Changelog")
-                a.btn.btn-default.btn-sm.left5(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.changelog)
+                a.btn.btn-default.btn-sm.left5(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.collectedChangelog)
                   +icon("list")
           td
             each dep in version.compatible

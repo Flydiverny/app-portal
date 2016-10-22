@@ -27,14 +27,7 @@ var resultOrError = (result) => {
 };
 
 var buildChangelog = (app) => {
-  var changelog = "";
-
-  app.versions.forEach(version => {
-    if (version.changelog)
-      changelog += version.changelog + "\n\n\n";
-  });
-
-  app.changelog = changelog;
+  app.changelog = app.versions.filter(ver => ver.changelog).map(ver => ver.changelog);
 
   return app;
 };
@@ -63,11 +56,13 @@ var renderApp = function (showNightly, showAll, showHidden) {
               var index = versionsCode.indexOf(Math.floor(ver.sortingCode / 100) * 100);
               if (index === -1) {
                 if (ver.downloadable && (showHidden || !ver.hidden)) {
+                  ver.collectedChangelog = [];
+                  ver.collectedChangelog.push(ver.changelog);
                   versionsToShow.push(ver);
                   versionsCode.push(Math.floor(ver.sortingCode / 100) * 100);
                 }
               } else if (ver.changelog) {
-                versionsToShow[index].changelog += "\n\n" + ver.changelog;
+                versionsToShow[index].collectedChangelog.push(ver.changelog);
               }
             });
 
