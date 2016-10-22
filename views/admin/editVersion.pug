@@ -18,7 +18,15 @@ block content
       label(for='changelog') Changelog
       textarea#changelog.form-control(name='changelog', placeholder='Changelog')= version.changelog
     .checkbox
-      label(for='hidden') 
-        input#hidden(type='checkbox', checked=version.hidden, name='hidden')
-        | Hidden
+      label(for='released')
+        input#released(type='checkbox', checked=version.released, name='released')
+        | Released
+    .checkbox
+      label(for='listed')
+        input#listed(type='checkbox', checked=!version.hidden, name='listed')
+        | Listed
+    .checkbox
+      label(for='downloadable')
+        input#downloadable(type='checkbox', checked=version.downloadable, name='downloadable')
+        | Downloadable
     button.btn.btn-primary(type='submit') Update
