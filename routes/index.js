@@ -152,6 +152,7 @@ router.get("/app/:id/:deptype/:depver", (req, res, next) => {
       var depVerId = obj.depVer;
 
       app.versions = app.versions
+          .filter(ver => !ver.hidden)
           .filter(ver => ver.compatible
               .filter(depVer => depVer.equals(depVerId)).length == 1);
 
