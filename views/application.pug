@@ -1,5 +1,7 @@
 extends layout
 
+include includes/mixins
+
 block script
   include includes/version-js
 
@@ -11,11 +13,11 @@ block content
         if nightly
           span  (Nightly)
       unless nightly
-        a.btn.btn-primary(href='', data-toggle='modal', data-target='#myModal', data-version="" data-content=changelog) Changelog&nbsp;
-          span.glyphicon.glyphicon-list
+        a.btn.btn-primary(href='', data-toggle='modal', data-target='#myModal', data-version="" data-content=changelog) Changelog
+          +icon("list").left5
         unless showlatest
-          a.btn.btn-primary(href='/download/' + id + '/latest') Download Latest&nbsp;
-            span.glyphicon.glyphicon-download-alt
+          a.btn.btn-primary(href='/download/' + id + '/latest') Download Latest
+              +icon("download-alt").left5
     .col-xs-4
       img.pull-right(src='/icon/' + id, alt=title + ' Logo', style='max-width: 100px; max-height: 100px;')
   unless nightly
@@ -39,36 +41,40 @@ block content
         tr
           td.version-font
             if session.admin
-              a.btn.btn-default.btn-sm(href='/admin/editVersion/' + version._id, data-tooltip="tooltip", data-placement="top", title="Edit")
-                span.glyphicon.glyphicon-edit
-              |&nbsp;
+              +tooltip("Edit")
+                a.btn.btn-default.btn-sm.right5(href='/admin/editVersion/' + version._id)
+                  +icon("edit")
             = version.name
             if version.changelog
-              a.btn.btn-default.btn-sm(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.changelog, style="margin-left: 5px", data-tooltip="tooltip", data-placement="top", title="Changelog")
-                span.glyphicon.glyphicon-list
+              +tooltip("Changelog")
+                a.btn.btn-default.btn-sm.left5(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.changelog)
+                  +icon("list")
           td
             each dep in version.compatible
               span.label.pull-left(style="background-color:" + dep.color + ";margin-right:5px;margin-bottom:5px;", id=dep.version)= dep.type.name + " " + dep.version
           td.text-right
             if session.admin
-              span.badge.hidden-xs(style="margin-right: 5px;") #{version.downloads}
+              +tooltip("Download count")
+                span.badge.hidden-xs.right5 #{version.downloads}
               if version.released
-                span.glyphicon.glyphicon-send.text-success(style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Released")
+                +icon("send", "Released").right5.text-success
                 unless version.hidden
-                  span.glyphicon.glyphicon-eye-open.text-success(style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Listed")
+                  +icon("eye-open", "Listed").right5.text-success
                 else
-                  span.glyphicon.glyphicon-eye-close.text-warning(style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Hidden")
+                  +icon("eye-close", "Hidden").right5.text-warning
               else
-                span.glyphicon.glyphicon-warning-sign.text-warning(style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Not Released")
+                +icon("warning-sign", "Not Released").right5.text-warning
 
             if version.released
               if version.downloadable
-                a.btn.btn-default.btn-sm.copy.hidden-xs(href="#", data-link='/download/' + version.filename, style="margin-right: 5px;", data-tooltip="tooltip", data-placement="top", title="Copy Download Link")
-                  span.glyphicon.glyphicon-copy
-                a.btn.btn-default.btn-sm(href='/download/' + version.filename, data-tooltip="tooltip", data-placement="top", title="Download")
-                  span.glyphicon.glyphicon-download-alt
+                +tooltip("Copy Download Link")
+                  a.btn.btn-default.btn-sm.copy.hidden-xs.right5(href="", data-link='/download/' + version.filename)
+                    +icon("copy")
+                +tooltip("Download")
+                  a.btn.btn-default.btn-sm(href='/download/' + version.filename)
+                    +icon("download-alt")
               else
-                span.glyphicon.glyphicon-ban-circle(data-tooltip="tooltip", data-placement="top", title="Download blocked")
+                +icon("ban-circle", "Download blocked")
       else
         tr
           td.text-center(colspan=3) No versions found!
