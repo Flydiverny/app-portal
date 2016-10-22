@@ -88,3 +88,9 @@ a.title:hover {
   width: 32px;
   margin-right: 5px;
 }
+
+pre {
+  white-space: pre-wrap;
+  word-break: normal;
+  word-wrap: break-word;
+}
