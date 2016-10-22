@@ -1,7 +1,7 @@
 script(type='text/javascript').
     $(function () {
         $('[data-toggle="modal"]').on('click', function() {
-            var $target = $("#dialogBody");
+            var $target = $("#dialogBody").empty();
             $.each($(this).data("content"), function(k, v) {
                 $target.append($("<pre>").text(v));
             });
