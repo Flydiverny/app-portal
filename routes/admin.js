@@ -78,7 +78,7 @@ var saveFile = function(file) {
           findCompatibleMatch(app._id, code).then(result => {
 
             new Version({
-              name: version + (rest ? " " + rest.join(' ') : ""),
+              name: version + (" " + rest.join(' ')).trim(),
               app: app._id,
               filename: file.originalname,
               apk: file.path,
