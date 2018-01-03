@@ -59,9 +59,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Inject session in locals
-app.use(function(req,res,next){
-    res.locals.session = req.session;
-    next();
+app.use((req,res,next) => {
+  res.locals.session = req.session;
+  next();
 });
 
 app.use((req, res, next) => {

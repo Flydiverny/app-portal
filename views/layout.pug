@@ -21,7 +21,7 @@ html(lang='en')
           if logo
             img.hidden-xs.logo(src=logo)
           h3.text-muted= pagetitle
-      .well(class=applications ? "shallow" : "")
+      .wrapper(class=applications ? "shallow" : "")
         if flash
           while message = flash.shift()
             .alert(class='alert-' + message.type)

@@ -25,47 +25,40 @@ block content
       .col-xs-12
         .btn-group(role="group")
           if session.admin
-            a.btn.btn-primary.btn-sm(href="/app/" + id + "/all") Show All
+            a.btn.btn-primary.btn-sm(href="/app/" + id + "/all") All
           a.btn.btn-info.btn-sm(href="/app/" + id + "/") Show Latest
-          each dep in dependencies
-            a.btn.btn-default.btn-sm(type="button", href="/app/" + id + "/" + dep.type.name + "/" + dep.version)= dep.type.name + " " + dep.version
+          each depGroup in dependencies
+            .btn-group(role="group")
+              button.btn.btn-default.btn-sm.dropdown-toggle(data-toggle='dropdown')= depGroup[0]
+                |&nbsp;
+                span.caret
+              ul.dropdown-menu
+                each dep in depGroup[1]
+                  li
+                    a(type="button", href="/app/" + id + "/" + dep.type.name + "/" + dep.version)= dep.type.name + " " + dep.version
 
-  table.table.versions-table
-    thead
-      tr
-        th(class= session.admin ? "version-col-wide" : "version-col") Version
-        th Compatibility
-        th
-    tbody
-      each version in versions
-        tr
-          td.version-font
-            if session.admin
-              +tooltip("Edit")
-                a.btn.btn-default.btn-sm.right5(href='/admin/editVersion/' + version._id)
-                  +icon("edit")
-            = version.name
-            if version.changelog
-              +tooltip("Changelog")
-                a.btn.btn-default.btn-sm.left5(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.collectedChangelog ? version.collectedChangelog : [version.changelog])
-                  +icon("list")
-          td
-            each dep in version.compatible
-              span.label.pull-left(style="background-color:" + dep.color + ";margin-right:5px;margin-bottom:5px;", id=dep.version)= dep.type.name + " " + dep.version
-          td.text-right
-            if session.admin
-              +tooltip("Download count")
-                span.badge.hidden-xs.right5 #{version.downloads}
-              if version.released
-                +icon("send", "Released").right5.text-success
-                unless version.hidden
-                  +icon("eye-open", "Listed").right5.text-success
+    h5 Version
+    each version in versions
+      div(style="border-top: 1px solid #ddd;padding-top: 8px;")
+        div(style="display:flex;align-items:center;margin-bottom: 8px;")
+          strong.version-font.right5= version.name
+          if session.admin
+            a.btn.btn-default.btn-sm.right5(href='/admin/editVersion/' + version._id) Edit
+          if version.changelog
+            a.btn.btn-default.btn-sm(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.collectedChangelog ? version.collectedChangelog : [version.changelog]) Changelog
+          if version.released
+            div(style="flex-grow: 1;justify-content: flex-end; align-items:center;display:flex;")
+              if session.admin
+                +tooltip("Download count")
+                  span.badge.hidden-xs.right5 #{version.downloads}
+                if version.released
+                  +icon("send", "Released").right5.text-success
+                  unless version.hidden
+                    +icon("eye-open", "Listed").right5.text-success
+                  else
+                    +icon("eye-close", "Hidden").right5.text-warning
                 else
-                  +icon("eye-close", "Hidden").right5.text-warning
-              else
-                +icon("warning-sign", "Not Released").right5.text-warning
-
-            if version.released
+                  +icon("warning-sign", "Not Released").right5.text-warning
               if version.downloadable
                 +tooltip("Copy Download Link")
                   a.btn.btn-default.btn-sm.copy.hidden-xs.right5(href="", data-link='/download/' + version.filename)
@@ -75,6 +68,12 @@ block content
                     +icon("download-alt")
               else
                 +icon("ban-circle", "Download blocked")
-      else
-        tr
-          td.text-center(colspan=3) No versions found!
+        if version.compatible
+          div(style="display:flex;flex-wrap:wrap;")
+            each depGroup in version.compatible
+              div(style="background: #ddd;border-radius:4px;padding:4px;margin-right:4px;margin-bottom:8px;display:flex;align-items:center;flex-wrap:")
+                span.label(style="font-weight:normal;color:#000;")= depGroup[0]
+                each dep in depGroup[1]
+                  span.label(style="background-color:" + dep.color + ";margin-right:4px;", id=dep.version)= dep.version
+    else
+      .text-center No versions found!
