@@ -1,19 +1,28 @@
-/* Space out content a bit */
-body {
-  padding-top: 20px;
-  padding-bottom: 20px;
+html, body {
+  height: 100%;
+  background: #23172D;
 }
 
 .header,
 .footer {
-  padding-right: 15px;
-  padding-left: 15px;
+  background: rgb(9, 6, 11);
+  padding: 16px;
+}
+
+.header li.active > a {
+  background-color: #EC2F45;
+}
+
+.header li.active > a:hover {
+  background-color: #23172D;
 }
 
 .header h3 {
   margin-top: 0;
   margin-bottom: 0;
   line-height: 40px;
+  font-weight: bold;
+  color: #FAF9F9;
 }
 
 .footer {
@@ -31,52 +40,23 @@ body {
   }
 }
 
-.header {
-  margin-bottom: 20px;
+
+.footer .container {
+  display: flex;
 }
 
-@media screen and (min-width: 768px) {
-  /* Remove the padding we set earlier */
-  .header,
-  .footer {
-    padding-right: 0;
-    padding-left: 0;
-  }
+.footer .right {
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
 }
 
-
-
-.thumbnail {
-  text-align: center;
-}
-
-.application img {
-  max-height: 175px;
+.footer .left a {
+  color: #EC2F45;
 }
 
 .selected a {
   border: 1px solid rgb(51, 122, 183);
-}
-
-
-.versions-table tbody tr td {
-  vertical-align: middle;
-}
-
-.version-col {
-  width: 114px;
-}
-
-.version-col-wide {
-  width: 157px;
-}
-
-.well {
-  margin-bottom: 0;
-}
-
-.shallow {
-  padding-bottom: 0;
 }
 
 .logo {
@@ -102,6 +82,7 @@ pre {
 
 .version-font {
   font-family: "Lucida Console", Monaco, monospace;
+  font-size: 20px;
 }
 
 .right5 {
@@ -112,8 +93,20 @@ pre {
   margin-left: 5px;
 }
 
-.thumbnail {
+.application a {
   box-shadow: 0 1px 2px rgba(0,0,0,.075);
+  color: #EC2F45;
+  text-align: center;
+  background: #faf9f9;
+  height: 100%;
+  display: block;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.application img {
+  max-width: 100%;
+  max-height: 175px;
 }
 
 select[multiple]#dependency, select[size] {
@@ -121,6 +114,122 @@ select[multiple]#dependency, select[size] {
 }
 
 .wrapper {
-  background-color: #f5f5f5;
+  background-color: #23172D;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 8px;
+}
+
+.app-title .title {
+  color:#23172D;
+  font-weight: bold;
+  font-size: 36px;
+}
+
+.app-title .btn.btn-primary {
+  border-color: #E18590;
+  background-color: #E18590;
+}
+
+.app-header .app-logo {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.app-filtering {
+  color: #faf9f9;
+  border-radius: 8px;
+  margin: 8px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
   padding: 8px;
+}
+
+.app-filtering .btn-info {
+  border-color: #E18590;
+  background-color: #E18590;
+}
+
+.filter-options {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
+.app-versions {
+  background-color: #FAF9F9;
+  padding-bottom: 8px;
+  margin: 8px;
+  border-radius: 8px;
+}
+
+.app-versions .versions-header {
+  color: #23172D;
+  font-weight: bold;
+  text-align: center;
+  font-size: 26px;
+  padding: 26px 8px 16px 8px;
+}
+
+.app-versions .version {
+  padding: 16px 8px 8px 8px;
+  margin: 8px;
+  border-top: 1px solid #E18590;
+}
+
+.version .version-font {
+  color: #23172D;
+}
+
+.version .version-nbr {
+  display:flex;
+  align-items:center;
+}
+
+.version .version-compatible {
+  display:flex;
+  flex-wrap:wrap;
+  margin-top: 8px;
+}
+
+.version .dep-group {
+  background: #ddd;
+  border-radius:4px;
+  padding:4px;
+  margin-right:4px;
+  display:flex;
+  align-items:center;
+  margin-bottom: 8px;
+}
+
+.full-changelog {
+  color: #E18590;
+}
+
+.btn-changes {
+  background-color: #ea99a7;
+  border-color: #ea99a7;
+  color: #fff;
+}
+
+.btn-changes:hover {
+  background-color: #E18590;
+  border-color: #E18590;
+  color: #fff;
+}
+
+.dropdown-menu {
+  right: 0;
+  left: auto;
+}
+
+.header .container, .footer .container {
+  padding: 0 8px;
 }

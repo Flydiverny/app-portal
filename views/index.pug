@@ -25,7 +25,7 @@ block script
       } else if (isMobile.Android()) {
         $(".ios").addClass("hidden");
       }
-      
+
       if (isMobile.Windows()
           || isMobile.BlackBerry()) {
         var $apps = $(".applications");
@@ -46,17 +46,17 @@ block content
     each app in applications
       .col-xs-6.col-md-3.application.text-center(id=app.id, class=app.type)
         if app.type === 'ios'
-          a.thumbnail(href=app.link)
+          a(href=app.link)
             img(src='/icon/' + app.id, alt=app.title + ' Logo')
-            =app.title
+            div=app.title
         else
           if nightly
-            a.thumbnail(href='/nightly/' + app.id)
+            a(href='/nightly/' + app.id)
               img(src='/icon/' + app.id, alt=app.title + ' Logo')
-              =app.title
+              div=app.title
           else
-            a.thumbnail(href='/app/' + app.id + (session.admin ? "/all" : ""))
+            a(href='/app/' + app.id + (session.admin ? "/all" : ""))
               img(src='/icon/' + app.id, alt=app.title + ' Logo')
-              =app.title
+              div=app.title
     else
       .col-md-12 There are no apps!

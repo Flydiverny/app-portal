@@ -1,10 +1,10 @@
 mixin icon(icon, title)
-    if title
-        +tooltip(title)
-            span.glyphicon(class="glyphicon-" + icon)&attributes(attributes)
-    else
-        span.glyphicon(class="glyphicon-" + icon)&attributes(attributes)
+  if title
+    +tooltip(title)
+      span.glyphicon(class="glyphicon-" + icon)&attributes(attributes)
+  else
+    span.glyphicon(class="glyphicon-" + icon)&attributes(attributes)
 
 mixin tooltip(title)
-    span(data-tooltip="tooltip", data-placement="top", title=title)&attributes(attributes)
-        block
+  span(data-tooltip="tooltip", data-placement="top", title=title)&attributes(attributes)
+    block

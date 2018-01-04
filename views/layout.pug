@@ -8,38 +8,39 @@ html(lang='en')
     link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    .container
-      .header
+    .header
+      .container
         nav
           ul.nav.nav-pills.pull-right
-            li(class={active: currentUrl === '/'}, role='presentation')
+            li.active
               a(href='/') Home
             if session.admin
-              li(class={active: currentUrl === '/admin'}, role='presentation')
+              li.active
                 a(href='/admin/') Admin
         a.title(href='/')
           if logo
             img.hidden-xs.logo(src=logo)
-          h3.text-muted= pagetitle
-      .wrapper(class=applications ? "shallow" : "")
+          h3= pagetitle
+    .wrapper
+      .container
         if flash
           while message = flash.shift()
             .alert(class='alert-' + message.type)
               p= message.message
         block content
-      footer.footer
-        p
-          span.pull-left
-            a(href='/download/') Latest
-            if nightly
-              |  |&nbsp;
-              a(href='/nightly/') Nightly
-            if session.admin
-              |  |&nbsp;
-              a(href='/admin/logout') Logout
-          span.pull-right
-            | Powered by&nbsp;
-            a(href="http://github.com/Flydiverny/app-portal", style="color: #777;") AppPortal
+    footer.footer
+      .container
+        div.left
+          a(href='/download/') Latest
+          if nightly
+            |  |&nbsp;
+            a(href='/nightly/') Nightly
+          if session.admin
+            |  |&nbsp;
+            a(href='/admin/logout') Logout
+        div.right
+          | Powered by&nbsp;
+          a(href="http://github.com/Flydiverny/app-portal", style="color: #777;") AppPortal
 
     script(src='/javascripts/jquery-3.1.1.slim.min.js')
     script(src='/javascripts/bootstrap.min.js')

@@ -7,47 +7,47 @@ block script
 
 block content
   include includes/changelog-dialog
-  .row
-    .col-xs-8
-      h1= title
+  .app-header(style="background-color: #faf9f9; color:#23172D;")
+    .app-title
+      div.title= title
         if nightly
-          span  (Nightly)
+          span (Nightly)
       unless nightly
-        a.btn.btn-primary(href='', data-toggle='modal', data-target='#myModal', data-version="", data-content=changelog) Changelog
-          +icon("list").left5
+        a.full-changelog(href='', data-toggle='modal', data-target='#myModal', data-version="", data-content=changelog) View all changes
         unless showlatest
           a.btn.btn-primary(href='/download/' + id + '/latest') Download Latest
               +icon("download-alt").left5
-    .col-xs-4
-      img.pull-right(src='/icon/' + id, alt=title + ' Logo', style='max-width: 100px; max-height: 100px;')
+    .app-logo
+      img(src='/icon/' + id, alt=title + ' Logo', style='max-width: 100px; max-height: 100px;')
   unless nightly
-    .row(style="margin-top: 15px;")
-      .col-xs-12
-        .btn-group(role="group")
-          if session.admin
-            a.btn.btn-primary.btn-sm(href="/app/" + id + "/all") All
-          a.btn.btn-info.btn-sm(href="/app/" + id + "/") Show Latest
-          each depGroup in dependencies
-            .btn-group(role="group")
-              button.btn.btn-default.btn-sm.dropdown-toggle(data-toggle='dropdown')= depGroup[0]
-                |&nbsp;
-                span.caret
-              ul.dropdown-menu
-                each dep in depGroup[1]
-                  li
-                    a(type="button", href="/app/" + id + "/" + dep.type.name + "/" + dep.version)= dep.type.name + " " + dep.version
+    .app-filtering
+      | Filtering
+      .btn-group.filter-options(role="group")
+        if session.admin
+          a.btn.btn-primary.btn-sm(href="/app/" + id + "/all") All
+        a.btn.btn-info.btn-sm(href="/app/" + id + "/") Show Latest
+        each depGroup in dependencies
+          .btn-group(role="group")
+            button.btn.btn-default.btn-sm.dropdown-toggle(data-toggle='dropdown')= depGroup[0]
+              |&nbsp;
+              span.caret
+            ul.dropdown-menu
+              each dep in depGroup[1]
+                li
+                  a(type="button", href="/app/" + id + "/" + dep.type.name + "/" + dep.version)= dep.type.name + " " + dep.version
 
-    h5 Version
+  div.app-versions
+    .versions-header Available Versions
     each version in versions
-      div(style="border-top: 1px solid #ddd;padding-top: 8px;")
-        div(style="display:flex;align-items:center;margin-bottom: 8px;")
-          strong.version-font.right5= version.name
+      div.version
+        div.version-nbr
+          strong.version-font= version.name
           if session.admin
             a.btn.btn-default.btn-sm.right5(href='/admin/editVersion/' + version._id) Edit
-          if version.changelog
-            a.btn.btn-default.btn-sm(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.collectedChangelog ? version.collectedChangelog : [version.changelog]) Changelog
           if version.released
             div(style="flex-grow: 1;justify-content: flex-end; align-items:center;display:flex;")
+              if version.changelog
+                a.btn.btn-changes.btn-sm.right5(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.collectedChangelog ? version.collectedChangelog : [version.changelog]) View changes
               if session.admin
                 +tooltip("Download count")
                   span.badge.hidden-xs.right5 #{version.downloads}
@@ -68,10 +68,10 @@ block content
                     +icon("download-alt")
               else
                 +icon("ban-circle", "Download blocked")
-        if version.compatible
-          div(style="display:flex;flex-wrap:wrap;")
+        if version.compatible.length > 0
+          div.version-compatible
             each depGroup in version.compatible
-              div(style="background: #ddd;border-radius:4px;padding:4px;margin-right:4px;margin-bottom:8px;display:flex;align-items:center;flex-wrap:")
+              div.dep-group
                 span.label(style="font-weight:normal;color:#000;")= depGroup[0]
                 each dep in depGroup[1]
                   span.label(style="background-color:" + dep.color + ";margin-right:4px;", id=dep.version)= dep.version
