@@ -33,15 +33,17 @@ var buildChangelog = (app) => ({
 
 var buildDependencyList = (app) => {
   // Build list of dependencies
-  const filteredDependencies = app.versions
-      .filter(version => !version.hidden)
-      .map(version => version.compatible.filter(dep => dep.type.filterable))
-      .reduce((a, b) => a.concat(b), [])
-      .filter((dep, i, self) => self.indexOf(dep) === i);
+  const dependencies = _.chain(app.versions)
+    .filter(version => !version.hidden)
+    .flatMap(version => version.compatible.filter(dep => dep.type.filterable))
+    .uniqBy(dep => dep._id.toString())
+    .groupBy(dep => dep.type.name)
+    .toPairs()
+    .value();
 
   return {
     ...app,
-    dependencies: _.toPairs(_.groupBy(filteredDependencies, (dep) => dep.type.name)),
+    dependencies,
   };
 };
 
