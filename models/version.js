@@ -7,11 +7,14 @@ const VersionSchema = new Schema({
   apk: { type: String, required: true, unique: true },
   filename: { type: String, required: true, unique: true },
   sortingCode: { type: Number, required: true },
-  compatible: { type: [{ type: Schema.Types.ObjectId, ref: 'DependencyVersion' }], default: [] },
+  compatible: {
+    type: [{ type: Schema.Types.ObjectId, ref: 'DependencyVersion' }],
+    default: [],
+  },
   nightly: { type: Boolean, required: true },
   mapping: { type: String },
   changelog: { type: String },
-  downloads: { type: Number, default: 0 },
+  downloads: { type: Number, default: 0 },
 
   /**
    * Whether the app version has been released or not, ie changelog is shown even if app is hidden
@@ -23,7 +26,7 @@ const VersionSchema = new Schema({
    *  - Version is not listed
    *  - Version is not downloadable
    **/
-  released: { type: Boolean, required: true, default: false },
+  released: { type: Boolean, required: true, default: false },
 
   /**
    * Whether an app version should be listed on the portal or not
@@ -43,7 +46,7 @@ const VersionSchema = new Schema({
    * else
    *  - Version is not downloadable
    **/
-  downloadable: { type: Boolean, required: true, default: true }
+  downloadable: { type: Boolean, required: true, default: true },
 });
 
 mongoose.model('Version', VersionSchema);

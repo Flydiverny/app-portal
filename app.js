@@ -13,20 +13,21 @@ const config = require('./util/config');
 const models = path.join(__dirname, 'models');
 const app = express();
 
-app.locals.pagetitle = config.title || "App Portal";
+app.locals.pagetitle = config.title || 'App Portal';
 app.locals.showlatest = config.showlatest || true;
 app.locals.logo = config.logo || false;
 
-const db = config.mongo.database || "app-portal";
-const host = config.mongo.host || "localhost";
+const db = config.mongo.database || 'app-portal';
+const host = config.mongo.host || 'localhost';
 const port = config.mongo.port || 27017;
 
-const DATABASE = "mongodb://" + host + ":" + port +  "/" + db;
+const DATABASE = 'mongodb://' + host + ':' + port + '/' + db;
 
 mongoose.Promise = global.Promise;
 
 // Bootstrap models
-fs.readdirSync(models)
+fs
+  .readdirSync(models)
   .filter(file => ~file.search(/^[^\.].*\.js$/))
   .forEach(file => require(path.join(models, file)));
 
@@ -35,17 +36,19 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // Add session handlng
-app.use(session({
-  secret: 'jkA3vRMB6BRBGBE*%fJOr^Xb4JXea*uME$nmaX',
-  resave: false,
-  saveUninitialized: true,
-  store: new MongoStore({
-    url: DATABASE,
-    autoRemove: 'interval',
-    autoRemoveInterval: 10 // In minutes. Default
-  }),
-  cookie: { maxAge: 15*60*1000}
-}));
+app.use(
+  session({
+    secret: 'jkA3vRMB6BRBGBE*%fJOr^Xb4JXea*uME$nmaX',
+    resave: false,
+    saveUninitialized: true,
+    store: new MongoStore({
+      url: DATABASE,
+      autoRemove: 'interval',
+      autoRemoveInterval: 10, // In minutes. Default
+    }),
+    cookie: { maxAge: 15 * 60 * 1000 },
+  })
+);
 
 // Allow use of flash messages
 app.use(require('flash')());
@@ -59,7 +62,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Inject session in locals
-app.use((req,res,next) => {
+app.use((req, res, next) => {
   res.locals.session = req.session;
   next();
 });
@@ -94,7 +97,7 @@ if (app.get('env') === 'development') {
     res.render('error', {
       status: err.status,
       message: err.message,
-      error: err
+      error: err,
     });
   });
 }
@@ -105,7 +108,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
     status: err.status,
-    message: err.message
+    message: err.message,
   });
 });
 

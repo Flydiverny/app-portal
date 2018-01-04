@@ -9,29 +9,29 @@ const DependencyVersion = mongoose.model('DependencyVersion');
 var renderIndex = (req, res, next) => {
   res.locals.applications = true;
 
-  var query = {hidden: false};
+  var query = { hidden: false };
 
   if (req.session.admin) {
     query = {};
   }
 
   Application.find(query)
-    .sort({type: 1, title: -1})
-    .then(apps => res.render('index', {applications: apps}))
+    .sort({ type: 1, title: -1 })
+    .then(apps => res.render('index', { applications: apps }))
     .catch(next);
 };
 
-var resultOrError = (result) => {
-  if (!result) throw new Error("No result");
+var resultOrError = result => {
+  if (!result) throw new Error('No result');
   return result;
 };
 
-var buildChangelog = (app) => ({
+var buildChangelog = app => ({
   ...app,
   changelog: app.versions.map(ver => ver.changelog).filter(d => d),
 });
 
-var buildDependencyList = (app) => {
+var buildDependencyList = app => {
   // Build list of dependencies
   const dependencies = _.chain(app.versions)
     .filter(version => !version.hidden)
@@ -47,7 +47,7 @@ var buildDependencyList = (app) => {
   };
 };
 
-var renderApp = function (showNightly, showAll, showHidden) {
+var renderApp = function(showNightly, showAll, showHidden) {
   return (req, res, next) => {
     queryApplication(req, res, next, showNightly)
       .then(app => {
@@ -59,8 +59,10 @@ var renderApp = function (showNightly, showAll, showHidden) {
         const versionsToShow = [];
 
         // Filter show only latest of each minor version.
-        app.versions.forEach((ver) => {
-          var index = versionsCode.indexOf(Math.floor(ver.sortingCode / 100) * 100);
+        app.versions.forEach(ver => {
+          var index = versionsCode.indexOf(
+            Math.floor(ver.sortingCode / 100) * 100
+          );
           if (index === -1) {
             if (ver.downloadable && (showHidden || !ver.hidden)) {
               ver.collectedChangelog = [];
@@ -78,12 +80,12 @@ var renderApp = function (showNightly, showAll, showHidden) {
           versions: versionsToShow,
         };
       })
-      .then(app => res.render("application", app))
+      .then(app => res.render('application', app))
       .catch(next);
-  }
+  };
 };
 
-var queryApplication = function (req, res, next, showNightly) {
+var queryApplication = function(req, res, next, showNightly) {
   res.locals.nightly = showNightly;
   var query = { nightly: showNightly };
 
@@ -91,34 +93,35 @@ var queryApplication = function (req, res, next, showNightly) {
     query.released = true;
   }
 
-  return Application.findOne({id: req.params.id})
+  return Application.findOne({ id: req.params.id })
     .populate({
       path: 'versions',
       populate: {
         path: 'compatible',
         options: {
-          sort: {version: -1}
+          sort: { version: -1 },
         },
         populate: {
           path: 'type',
-          select: 'name filterable'
-        }
+          select: 'name filterable',
+        },
       },
-      select: 'name changelog hidden filename compatible sortingCode downloads downloadable released',
+      select:
+        'name changelog hidden filename compatible sortingCode downloads downloadable released',
       match: query,
       options: {
-        sort: {sortingCode: -1}
-      }
+        sort: { sortingCode: -1 },
+      },
     })
     .then(resultOrError)
-    .then((app) => app.toObject())
+    .then(app => app.toObject())
     .then(buildDependencyList)
-    .then((app) => ({
+    .then(app => ({
       ...app,
-      versions: app.versions.map(({compatible, ...version}) => ({
+      versions: app.versions.map(({ compatible, ...version }) => ({
         ...version,
-        compatible: _.toPairs(_.groupBy(compatible, (dep) => dep.type.name)),
-      }))
+        compatible: _.toPairs(_.groupBy(compatible, dep => dep.type.name)),
+      })),
     }))
     .then(buildChangelog)
     .catch(next);
@@ -133,37 +136,42 @@ router.get('/nightly', (req, res, next) => {
   renderIndex(req, res, next);
 });
 
-router.get("/icon/:id", (req, res, next) => {
-  Application.findOne({id: req.params.id}).then(app => {
+router.get('/icon/:id', (req, res, next) => {
+  Application.findOne({ id: req.params.id }).then(app => {
     if (!app) return res.sendStatus(404);
 
-    return res.sendFile(__dirname.replace("routes", "") + "/" + app.icon);
-  })
+    return res.sendFile(__dirname.replace('routes', '') + '/' + app.icon);
+  });
 });
 
-router.get("/app/:id", renderApp(false, false));
+router.get('/app/:id', renderApp(false, false));
 
-router.get("/app/:id/all", renderApp(false, true, true));
+router.get('/app/:id/all', renderApp(false, true, true));
 
-router.get("/nightly/:id", renderApp(true, true));
+router.get('/nightly/:id', renderApp(true, true));
 
-router.get("/app/:id/:deptype/:depver", (req, res, next) => {
-  Dependency.findOne({name: req.params.deptype})
+router.get('/app/:id/:deptype/:depver', (req, res, next) => {
+  Dependency.findOne({ name: req.params.deptype })
     .then(resultOrError)
-    .then(dep => DependencyVersion.findOne({version: req.params.depver}))
+    .then(dep => DependencyVersion.findOne({ version: req.params.depver }))
     .then(resultOrError)
     .then(depVer =>
-      queryApplication(req, res, next, false)
-        .then(app => { return {app, depVer} })
+      queryApplication(req, res, next, false).then(app => {
+        return { app, depVer };
+      })
     )
-    .then(({app, depVer}) => {
+    .then(({ app, depVer }) => {
       const depVerId = depVer._id.toString();
 
       const versions = app.versions
         .filter(ver => !ver.hidden)
-        .filter(ver => ver.compatible.find(([group, deps]) => deps.find((dep) => dep._id.toString() === depVerId)));
+        .filter(ver =>
+          ver.compatible.find(([group, deps]) =>
+            deps.find(dep => dep._id.toString() === depVerId)
+          )
+        );
 
-      return res.render("application", {...app, versions});
+      return res.render('application', { ...app, versions });
     })
     .catch(next);
 });
