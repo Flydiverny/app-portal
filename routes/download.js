@@ -1,14 +1,14 @@
-var express = require('express');
-var mongoose = require('mongoose');
-var router = express.Router();
+const express = require('express');
+const mongoose = require('mongoose');
+const router = express.Router();
 const Application = mongoose.model('Application');
 const Version = mongoose.model('Version');
 const Dependency = mongoose.model('Dependency');
 const DependencyVersion = mongoose.model('DependencyVersion');
 const escapeStringRegexp = require('escape-string-regexp');
 
-var queryPromise = function(reqQuery, params) {
-  var query = { released: true, downloadable: true };
+const queryPromise = function(reqQuery, params) {
+  let query = { released: true, downloadable: true };
 
   if (reqQuery.force !== undefined) {
     query = {};
@@ -18,7 +18,7 @@ var queryPromise = function(reqQuery, params) {
     query.filename = filenameToInsensitive(params.filename);
   }
 
-  var promise = Promise.resolve(query);
+  let promise = Promise.resolve(query);
 
   if (params.app) {
     promise = promise
@@ -49,13 +49,13 @@ var queryPromise = function(reqQuery, params) {
   return promise;
 };
 
-var downloadFile = function(req, res, next) {
+const downloadFile = function(req, res, next) {
   return queryPromise(req.query, req.params)
     .then(query =>
       Version.findOne(query, 'apk filename downloads').sort({ sortingCode: -1 })
     )
     .then(version => {
-      var options = {
+      const options = {
         root: __dirname.replace('routes', ''),
         headers: {
           'Content-Type': 'application/vnd.android.package-archive',
@@ -79,7 +79,7 @@ var downloadFile = function(req, res, next) {
     .catch(catcher(req, res));
 };
 
-var getMeta = function(req, res, next) {
+const getMeta = function(req, res, next) {
   return queryPromise(req.query, req.params)
     .then(query =>
       Version.findOne(query, 'name compatible')
@@ -97,7 +97,7 @@ var getMeta = function(req, res, next) {
         .sort({ sortingCode: -1 })
     )
     .then(version => {
-      var response = {
+      const response = {
         version: version.name,
         compatible: {},
       };
@@ -119,7 +119,7 @@ var getMeta = function(req, res, next) {
     .catch(catcher(req, res));
 };
 
-var catcher = function(req, res) {
+const catcher = function(req, res) {
   return err => {
     console.error('Failed on path: ' + req.path + ' with err: ' + err);
     console.error(err.stack);
@@ -129,12 +129,12 @@ var catcher = function(req, res) {
   };
 };
 
-var filenameToInsensitive = function(filename) {
+const filenameToInsensitive = function(filename) {
   return new RegExp('^' + escapeStringRegexp(filename) + '$', 'i');
 };
 
 router.get('/', function(req, res, next) {
-  var query = { released: true, hidden: false, nightly: false };
+  let query = { released: true, hidden: false, nightly: false };
 
   if (req.session.admin) {
     query = { nightly: false };

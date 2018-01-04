@@ -1,9 +1,9 @@
-var mkdirp = require('mkdirp');
-var multer = require('multer');
+const mkdirp = require('mkdirp');
+const multer = require('multer');
 
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    var dir = 'uploads/';
+    const dir = 'uploads/';
     mkdirp(dir, function(e) {
       if (e) {
         console.error(e);

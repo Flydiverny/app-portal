@@ -1,29 +1,29 @@
-var mongoose = require('mongoose');
-var router = require('express').Router();
+const mongoose = require('mongoose');
+const router = require('express').Router();
 const auth = require('../../middleware/auth');
 const Dependency = mongoose.model('Dependency');
 const DependencyVersion = mongoose.model('DependencyVersion');
 
-var randomColor = function() {
+const randomColor = function() {
   return '#000000'.replace(/0/g, function() {
     return (~~(Math.random() * 16)).toString(16);
   });
 };
 
 router.get('/dependency', auth, (req, res, next) => {
-  Dependency.find().then(deps => {
-    return res.render('admin/dependency/index', { types: deps });
-  });
+  Dependency.find().then(deps =>
+    res.render('admin/dependency/index', { types: deps })
+  );
 });
 
-router.get('/dependency/add', auth, (req, res, next) => {
-  return res.render('admin/dependency/add');
-});
+router.get('/dependency/add', auth, (req, res, next) =>
+  res.render('admin/dependency/add')
+);
 
 router.get('/dependency/edit/:id', auth, (req, res, next) => {
-  Dependency.findOne({ _id: req.params.id }).then(dep => {
-    return res.render('admin/dependency/edit', dep);
-  });
+  Dependency.findOne({ _id: req.params.id }).then(dep =>
+    res.render('admin/dependency/edit', dep)
+  );
 });
 
 router.post('/dependency/edit/:id', auth, (req, res, next) => {
@@ -44,7 +44,7 @@ router.post('/dependency/edit/:id', auth, (req, res, next) => {
 });
 
 router.post('/dependency/add', auth, (req, res, next) => {
-  var dep = new Dependency({
+  const dep = new Dependency({
     name: req.body.name,
   }).save((err, result) => {
     if (err) {

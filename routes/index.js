@@ -6,10 +6,10 @@ const Application = mongoose.model('Application');
 const Dependency = mongoose.model('Dependency');
 const DependencyVersion = mongoose.model('DependencyVersion');
 
-var renderIndex = (req, res, next) => {
+const renderIndex = (req, res, next) => {
   res.locals.applications = true;
 
-  var query = { hidden: false };
+  let query = { hidden: false };
 
   if (req.session.admin) {
     query = {};
@@ -21,17 +21,17 @@ var renderIndex = (req, res, next) => {
     .catch(next);
 };
 
-var resultOrError = result => {
+const resultOrError = result => {
   if (!result) throw new Error('No result');
   return result;
 };
 
-var buildChangelog = app => ({
+const buildChangelog = app => ({
   ...app,
   changelog: app.versions.map(ver => ver.changelog).filter(d => d),
 });
 
-var buildDependencyList = app => {
+const buildDependencyList = app => {
   // Build list of dependencies
   const dependencies = _.chain(app.versions)
     .filter(version => !version.hidden)
@@ -47,7 +47,7 @@ var buildDependencyList = app => {
   };
 };
 
-var renderApp = function(showNightly, showAll, showHidden) {
+const renderApp = function(showNightly, showAll, showHidden) {
   return (req, res, next) => {
     queryApplication(req, res, next, showNightly)
       .then(app => {
@@ -60,7 +60,7 @@ var renderApp = function(showNightly, showAll, showHidden) {
 
         // Filter show only latest of each minor version.
         app.versions.forEach(ver => {
-          var index = versionsCode.indexOf(
+          const index = versionsCode.indexOf(
             Math.floor(ver.sortingCode / 100) * 100
           );
           if (index === -1) {
@@ -85,9 +85,9 @@ var renderApp = function(showNightly, showAll, showHidden) {
   };
 };
 
-var queryApplication = function(req, res, next, showNightly) {
+const queryApplication = function(req, res, next, showNightly) {
   res.locals.nightly = showNightly;
-  var query = { nightly: showNightly };
+  let query = { nightly: showNightly };
 
   if (!res.locals.session.admin) {
     query.released = true;

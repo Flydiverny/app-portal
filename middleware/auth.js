@@ -1,12 +1,12 @@
 /**
  * Created by marku on 2016-04-19.
  */
-var fs = require('fs');
+const fs = require('fs');
 
-var config = JSON.parse(fs.readFileSync('config.json'));
+const config = JSON.parse(fs.readFileSync('config.json'));
 
 // Authentication and Authorization Middleware
-var auth = function(req, res, next) {
+const auth = function(req, res, next) {
   if ((req.session && req.session.admin) || req.get('token') === config.token)
     return next();
   else {

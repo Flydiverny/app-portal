@@ -1,10 +1,10 @@
-var express = require('express');
-var mongoose = require('mongoose');
-var multer = require('multer');
-var router = express.Router();
-var fs = require('fs');
-var mkdirp = require('mkdirp');
-var Promise = require('bluebird');
+const express = require('express');
+const mongoose = require('mongoose');
+const multer = require('multer');
+const router = express.Router();
+const fs = require('fs');
+const mkdirp = require('mkdirp');
+const Promise = require('bluebird');
 const Application = mongoose.model('Application');
 const Version = mongoose.model('Version');
 const Dependency = mongoose.model('Dependency');
@@ -16,7 +16,7 @@ const config = require('../util/config');
 const username = config.username || 'admin';
 const password = config.password || 'Private!';
 
-var isNightly = filename => {
+const isNightly = filename => {
   return (
     filename.indexOf('rev') > -1 ||
     filename.indexOf('NIGHTLY') > -1 ||
@@ -24,10 +24,10 @@ var isNightly = filename => {
   );
 };
 
-var sortingCode = apk => {
+const sortingCode = apk => {
   console.log('Generating sorting code!');
-  var ext = apk.indexOf('.apk');
-  var filename = apk.substring(0, ext);
+  const ext = apk.indexOf('.apk');
+  const filename = apk.substring(0, ext);
 
   if (filename.indexOf('NIGHTLY') > -1) {
     let tokens = filename.split('_');
@@ -41,12 +41,12 @@ var sortingCode = apk => {
     return parseInt(tokens[2].replace('rev', ''));
   }
 
-  var snap = filename.indexOf('-');
+  const snap = filename.indexOf('-');
 
   if (snap > -1) filename = filename.substring(0, snap);
 
-  let tokens = filename.split('_');
-  var version = tokens[1].split('.');
+  const tokens = filename.split('_');
+  const version = tokens[1].split('.');
 
   return (
     parseInt(version[0]) * 10000 +
@@ -55,9 +55,9 @@ var sortingCode = apk => {
   );
 };
 
-var findCompatibleMatch = function(appId, sortingCode) {
-  let sortFloor = Math.floor(sortingCode / 100) * 100;
-  let sortRoof = sortFloor + 100;
+const findCompatibleMatch = function(appId, sortingCode) {
+  const sortFloor = Math.floor(sortingCode / 100) * 100;
+  const sortRoof = sortFloor + 100;
   return Version.findOne({
     app: appId,
     sortingCode: { $gte: sortFloor, $lt: sortRoof },
@@ -69,17 +69,17 @@ var findCompatibleMatch = function(appId, sortingCode) {
     });
 };
 
-var saveFile = function(file) {
+const saveFile = function(file) {
   console.log('Creating promise!');
   return new Promise((resolve, reject) => {
     console.log('Running promise!');
-    var filename = file.originalname;
-    var ext = filename.indexOf('.apk');
+    let filename = file.originalname;
+    const ext = filename.indexOf('.apk');
 
     if (ext === -1) return;
 
     filename = filename.substring(0, ext);
-    var [key, version, ...rest] = filename.split('_'); // [0] = "AppPortal", [1] = "2.0.0"
+    const [key, version, ...rest] = filename.split('_'); // [0] = "AppPortal", [1] = "2.0.0"
 
     if (key === undefined || version === undefined)
       return reject("Filename doesn't match expected format");
@@ -87,7 +87,7 @@ var saveFile = function(file) {
     Application.findOne({ id: key }).then(app => {
       if (!app) return reject('Unknown application');
 
-      var code = sortingCode(file.originalname);
+      const code = sortingCode(file.originalname);
       findCompatibleMatch(app._id, code).then(result => {
         new Version({
           name: version + (' ' + rest.join(' ')).trim(),
@@ -111,11 +111,9 @@ var saveFile = function(file) {
   });
 };
 
-var mapFiles = files => {
-  return Promise.map(files, saveFile);
-};
+const mapFiles = files => Promise.map(files, saveFile);
 
-var uploadApk = multer({
+const uploadApk = multer({
   storage: storage,
   fileFilter: function fileFilter(req, file, cb) {
     if (

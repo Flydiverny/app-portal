@@ -1,13 +1,13 @@
-var express = require('express');
-var mongoose = require('mongoose');
-var router = express.Router();
-var fs = require('fs');
-var multer = require('multer');
+const express = require('express');
+const mongoose = require('mongoose');
+const router = express.Router();
+const fs = require('fs');
+const multer = require('multer');
 const Application = mongoose.model('Application');
 const auth = require('../../middleware/auth');
 const storage = require('../../util/upload');
 
-var upload = multer({ storage: storage });
+const upload = multer({ storage: storage });
 
 router.get('/newApplication', auth, (req, res, next) => {
   return res.render('admin/newApplication');
@@ -28,7 +28,7 @@ router.post(
       return res.redirect('/admin/newApplication');
     }
 
-    var app = new Application({
+    const app = new Application({
       id: req.body.key,
       title: req.body.title,
       type: req.body.type,
