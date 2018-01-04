@@ -155,10 +155,11 @@ router.get("/app/:id/:deptype/:depver", (req, res, next) => {
         .then(app => { return {app, depVer} })
     )
     .then(({app, depVer}) => {
+      const depVerId = depVer._id.toString();
+
       const versions = app.versions
         .filter(ver => !ver.hidden)
-        .filter(ver => ver.compatible
-          .filter(depVer => depVer.equals(depVerId)).length == 1);
+        .filter(ver => ver.compatible.find(([group, deps]) => deps.find((dep) => dep._id.toString() === depVerId)));
 
       return res.render("application", {...app, versions});
     })
