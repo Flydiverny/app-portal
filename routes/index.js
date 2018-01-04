@@ -18,7 +18,7 @@ var renderIndex = (req, res, next) => {
   Application.find(query)
     .sort({type: 1, title: -1})
     .then(apps => res.render('index', {applications: apps}))
-    .then(next);
+    .catch(next);
 };
 
 var resultOrError = (result) => {
@@ -108,6 +108,7 @@ var queryApplication = function (req, res, next, showNightly) {
         sort: {sortingCode: -1}
       }
     })
+    .then(resultOrError)
     .then((app) => app.toObject())
     .then(buildDependencyList)
     .then((app) => ({
@@ -149,7 +150,7 @@ router.get("/app/:id/:deptype/:depver", (req, res, next) => {
     .then(resultOrError)
     .then(dep => DependencyVersion.findOne({version: req.params.depver}))
     .then(resultOrError)
-    .then(depVer => 
+    .then(depVer =>
       queryApplication(req, res, next, false)
         .then(app => { return {app, depVer} })
     )
