@@ -45,7 +45,7 @@ block content
           if session.admin
             a.btn.btn-default.btn-sm.right5(href='/admin/editVersion/' + version._id) Edit
           if version.released
-            div(style="flex-grow: 1;justify-content: flex-end; align-items:center;display:flex;")
+            .version-buttons
               if version.changelog
                 a.btn.btn-changes.btn-sm.right5(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=version.collectedChangelog ? version.collectedChangelog : [version.changelog]) View changes
               if session.admin
@@ -76,4 +76,4 @@ block content
                 each dep in depGroup[1]
                   span.label(style="background-color:" + dep.color + ";margin-right:4px;", id=dep.version)= dep.version
     else
-      .text-center No versions found!
+      .no-versions No versions found!

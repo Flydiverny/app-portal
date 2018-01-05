@@ -6,42 +6,31 @@ block script
     include includes/version-js
 
 block content
-    include includes/changelog-dialog
-    .row
-        .col-xs-8
-            h1 Download
-            h4 Showing 10 latest releases
+  include includes/changelog-dialog
+  .downloads-header
+    .title Download
+    h4 Showing 10 latest releases
 
-    table.table.versions-table
-        thead
-            tr
-                th Version
-                th
-        tbody
-            each version in versions
-                tr
-                    td
-                        a(href="/app/" + version.app.id)
-                            img.mini-icon(src='/icon/' + version.app.id)
-                        if session.admin
-                            +tooltip("Edit")
-                                a.btn.btn-default.btn-sm.right5(href='/admin/editVersion/' + version._id)
-                                    +icon("edit")
-                        if version.changelog
-                            +tooltip("Changelog")
-                                a.btn.btn-default.btn-sm.right5(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=[version.changelog])
-                                    +icon("list")
-                        = version.app.title + " " + version.name
-                    td.text-right
-                        if version.downloadable
-                            +tooltip("Copy Download Link")
-                                a.btn.btn-default.btn-sm.copy.hidden-xs.right5(href="", data-link='/download/' + version.filename)
-                                    +icon("copy")
-                            +tooltip("Download")
-                                a.btn.btn-default.btn-sm(href='/download/' + version.filename)
-                                    +icon("download-alt")
-                        else
-                            +icon("ban-circle", "Download blocked")
+  div.app-versions.downloads-versions
+    .versions-header Latest releases
+    each version in versions
+      .version
+        .version-nbr
+          a(href="/app/" + version.app.id)
+            img.mini-icon(src='/icon/' + version.app.id)
+          .latest-font= version.app.title + " " + version.name
+          .version-buttons
+            if version.changelog
+              +tooltip("Changelog")
+                a.btn.btn-changes.btn-sm.right5(href="", data-toggle='modal', data-target='#myModal', data-version=version.name, data-content=[version.changelog]) View changes
+            if version.downloadable
+              +tooltip("Copy Download Link")
+                a.btn.btn-default.btn-sm.copy.hidden-xs.right5(href="", data-link='/download/' + version.filename)
+                  +icon("copy")
+              +tooltip("Download")
+                a.btn.btn-default.btn-sm(href='/download/' + version.filename)
+                  +icon("download-alt")
             else
-                tr
-                    td.text-center(colspan=2) No versions found!
+              +icon("ban-circle", "Download blocked")
+    else
+      .no-versions No versions found!

@@ -42,7 +42,7 @@ block content
       .col-xs-6.text-right
         h1(style="margin-top:0")
           a(href="/") Go to Release
-  .row.applications
+  .applications.clearfix
     each app in applications
       .col-xs-6.col-md-3.application.text-center(id=app.id, class=app.type)
         if app.type === 'ios'

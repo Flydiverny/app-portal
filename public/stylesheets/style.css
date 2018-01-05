@@ -83,6 +83,7 @@ pre {
 .version-font {
   font-family: "Lucida Console", Monaco, monospace;
   font-size: 20px;
+  color: #23172D;
 }
 
 .right5 {
@@ -115,6 +116,7 @@ select[multiple]#dependency, select[size] {
 
 .wrapper {
   background-color: #23172D;
+  flex-grow: 1;
 }
 
 .app-header {
@@ -123,9 +125,19 @@ select[multiple]#dependency, select[size] {
   padding: 16px;
   border-radius: 8px;
   margin: 8px;
+  background-color: #faf9f9;
+  color:#23172D;
 }
 
-.app-title .title {
+.downloads-header {
+  background-color: #faf9f9;
+  color:#23172D;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 8px;
+}
+
+.title {
   color:#23172D;
   font-weight: bold;
   font-size: 36px;
@@ -165,7 +177,6 @@ select[multiple]#dependency, select[size] {
 
 .app-versions {
   background-color: #FAF9F9;
-  padding-bottom: 8px;
   margin: 8px;
   border-radius: 8px;
 }
@@ -182,10 +193,6 @@ select[multiple]#dependency, select[size] {
   padding: 16px 8px 8px 8px;
   margin: 8px;
   border-top: 1px solid #E18590;
-}
-
-.version .version-font {
-  color: #23172D;
 }
 
 .version .version-nbr {
@@ -232,4 +239,37 @@ select[multiple]#dependency, select[size] {
 
 .header .container, .footer .container {
   padding: 0 8px;
+}
+
+.applications {
+  padding: 16px 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.version-buttons {
+  flex-grow: 1;
+  justify-content: flex-end;
+  align-items:center;
+  display:flex;
+}
+
+.latest-font {
+  font-size: 16px;
+  color: #23172D;
+  font-weight: bold;
+}
+
+.no-versions {
+  padding-bottom: 16px;
+  text-align: center;
+  color: #23172D;
+}
+
+.downloads-versions {
+  padding-bottom: 8px;
 }
