@@ -36,7 +36,7 @@ block content
                 li
                   a(type="button", href="/app/" + id + "/" + dep.type.name + "/" + dep.version)= dep.type.name + " " + dep.version
 
-  div.app-versions
+  .light-card
     .versions-header Available Versions
     each version in versions
       div.version

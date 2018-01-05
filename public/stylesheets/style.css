@@ -175,13 +175,13 @@ select[multiple]#dependency, select[size] {
   justify-content: flex-end;
 }
 
-.app-versions {
+.light-card {
   background-color: #FAF9F9;
   margin: 8px;
   border-radius: 8px;
 }
 
-.app-versions .versions-header {
+.versions-header {
   color: #23172D;
   font-weight: bold;
   text-align: center;
@@ -189,7 +189,11 @@ select[multiple]#dependency, select[size] {
   padding: 26px 8px 16px 8px;
 }
 
-.app-versions .version {
+.center {
+  text-align: center;
+}
+
+.version {
   padding: 16px 8px 8px 8px;
   margin: 8px;
   border-top: 1px solid #E18590;
@@ -272,4 +276,8 @@ body {
 
 .downloads-versions {
   padding-bottom: 8px;
+}
+
+.card-body {
+  padding: 8px;
 }

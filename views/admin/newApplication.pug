@@ -1,26 +1,28 @@
 extends ../layout
 
 block content
-  form(action='/admin/newApplication', enctype='multipart/form-data', method='post')
-    .form-group
-      label(for='title') Application name
-      input#title.form-control(type='text', name='title', placeholder='Title')
-    .form-group
-      label(for='type') Application type
-      select#type.form-control(name='type')
-        option(value='android') Android
-        option(value='ios') iOS
-    .form-group
-      label(for='link') Store link
-      input#link.form-control(type='text', name='link', placeholder="https://itunes.apple.com/app/idXXXXXXXXXX")
-    .form-group
-      label(for='key') Key (apk name starts with)
-      input#key.form-control(type='text', name='key', placeholder="ex. AppPortal if apk's are named AppPortal_v2.3.0.apk")
-    .form-group
-      label(for='icon') Icon
-      input#icon(type='file', name='icon')
-    .checkbox
-      label(for='hidden') 
-        input#hidden(type='checkbox', name='hidden')
-        | Hidden
-    button.btn.btn-primary(type='submit') Create
+  .light-card
+    .card-body
+      form(action='/admin/newApplication', enctype='multipart/form-data', method='post')
+        .form-group
+          label(for='title') Application name
+          input#title.form-control(type='text', name='title', placeholder='Title')
+        .form-group
+          label(for='type') Application type
+          select#type.form-control(name='type')
+            option(value='android') Android
+            option(value='ios') iOS
+        .form-group
+          label(for='link') Store link
+          input#link.form-control(type='text', name='link', placeholder="https://itunes.apple.com/app/idXXXXXXXXXX")
+        .form-group
+          label(for='key') Key (apk name starts with)
+          input#key.form-control(type='text', name='key', placeholder="ex. AppPortal if apk's are named AppPortal_v2.3.0.apk")
+        .form-group
+          label(for='icon') Icon
+          input#icon(type='file', name='icon')
+        .checkbox
+          label(for='hidden')
+            input#hidden(type='checkbox', name='hidden')
+            | Hidden
+        button.btn.btn-primary(type='submit') Create

@@ -1,14 +1,16 @@
 extends ../../layout
 
 block content
-  h2 Edit Dependency&nbsp;
-    = name
-  form(method='POST', action='/admin/dependency/edit/' + _id)
-    .form-group
-      label(for='title') Dependency Name
-      input#title.form-control(type='text', placeholder='AppPortal', name='name', value=name)
-    .checkbox
-      label(for='filterable')
-        input#filterable(type='checkbox', checked=filterable, name='filterable')
-        | Filterable
-    button.btn.btn-primary(type='submit') Update
+  .light-card
+    .card-body
+      .title Edit Dependency&nbsp;
+        = name
+      form(method='POST', action='/admin/dependency/edit/' + _id)
+        .form-group
+          label(for='title') Dependency Name
+          input#title.form-control(type='text', placeholder='AppPortal', name='name', value=name)
+        .checkbox
+          label(for='filterable')
+            input#filterable(type='checkbox', checked=filterable, name='filterable')
+            | Filterable
+        button.btn.btn-primary(type='submit') Update

@@ -3,30 +3,31 @@ extends ../layout
 
 block content
   - function isSelected(dependency) { return version.compatible.some(function (dep) { return dep.equals(dependency); }); }
-
-  h2= 'Edit ' + version.app.title + ' ' + version.name
-  form(method='POST', action='/admin/editVersion/' + version._id)
-    .form-group
-      label(for='dependency') Dependencies
-      select#dependency.form-control(name='dependency', multiple='multiple')
-        each dependency in dependencies
-          if isSelected(dependency)
-            option(value=dependency._id, selected="selected")= dependency.type.name + " " + dependency.version
-          else
-            option(value=dependency._id)= dependency.type.name + " " + dependency.version
-    .form-group
-      label(for='changelog') Changelog
-      textarea#changelog.form-control(name='changelog', placeholder='Changelog', rows="10")= version.changelog
-    .checkbox
-      label(for='released')
-        input#released(type='checkbox', checked=version.released, name='released')
-        | Released
-    .checkbox
-      label(for='listed')
-        input#listed(type='checkbox', checked=!version.hidden, name='listed')
-        | Listed
-    .checkbox
-      label(for='downloadable')
-        input#downloadable(type='checkbox', checked=version.downloadable, name='downloadable')
-        | Downloadable
-    button.btn.btn-primary(type='submit') Update
+  .light-card
+    .card-body
+      .title= 'Edit ' + version.app.title + ' ' + version.name
+      form(method='POST', action='/admin/editVersion/' + version._id)
+        .form-group
+          label(for='dependency') Dependencies
+          select#dependency.form-control(name='dependency', multiple='multiple')
+            each dependency in dependencies
+              if isSelected(dependency)
+                option(value=dependency._id, selected="selected")= dependency.type.name + " " + dependency.version
+              else
+                option(value=dependency._id)= dependency.type.name + " " + dependency.version
+        .form-group
+          label(for='changelog') Changelog
+          textarea#changelog.form-control(name='changelog', placeholder='Changelog', rows="10")= version.changelog
+        .checkbox
+          label(for='released')
+            input#released(type='checkbox', checked=version.released, name='released')
+            | Released
+        .checkbox
+          label(for='listed')
+            input#listed(type='checkbox', checked=!version.hidden, name='listed')
+            | Listed
+        .checkbox
+          label(for='downloadable')
+            input#downloadable(type='checkbox', checked=version.downloadable, name='downloadable')
+            | Downloadable
+        button.btn.btn-primary(type='submit') Update

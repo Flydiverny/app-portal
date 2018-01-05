@@ -1,19 +1,21 @@
 extends ../../layout
 
 block content
-  .row
-    .col-xs-12
-      h1 Dependency Types
-        a.pull-right.btn.btn-primary(href='/admin/dependency/add')
-          span.glyphicon.glyphicon-plus
-          | &nbsp;Add New
-  table.table
-    thead
-      tr
-        th Name
-    tbody
-    each dep in types
-      tr
-        td
-          a(href='/admin/dependency/edit/' + dep.id)
-            =dep.name
+  .light-card
+    .card-body
+      .row
+        .col-xs-12
+          .title Dependency Types
+            a.pull-right.btn.btn-primary(href='/admin/dependency/add')
+              span.glyphicon.glyphicon-plus
+              | &nbsp;Add New
+      table.table
+        thead
+          tr
+            th Name
+        tbody
+        each dep in types
+          tr
+            td
+              a(href='/admin/dependency/edit/' + dep.id)
+                =dep.name
