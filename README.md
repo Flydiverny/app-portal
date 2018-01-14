@@ -1,4 +1,6 @@
 # app-portal
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/Flydiverny/app-portal.svg)](https://greenkeeper.io/)
 A simple portal for distributing mobile applications written in nodejs using mongodb.
 
 ----
