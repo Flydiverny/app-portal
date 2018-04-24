@@ -2,7 +2,7 @@
 A simple portal for distributing mobile applications written in nodejs using mongodb.
 
 ----
-Example config.json file placed in rootdir:
+Example config.json file placed in root-dir:
 ```json
 {
   "title": "Mobile Portal",
